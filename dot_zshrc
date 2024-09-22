@@ -1,85 +1,41 @@
-# 1Password Session Manager
-op_session_manager() {
-  local session_dir="$HOME/.op_sessions"
-  mkdir -p "$session_dir"
-  chmod 700 "$session_dir"
-
-  # Function to retrieve the account alias (user UUID)
-  get_account_alias() {
-    op account list --format json | jq -r '.[0].user_uuid'
-  }
-
-  # Function to sign in and manage the session token
-  signin_op() {
-    local account_alias="$1"
-    local session_file="$2"
-    local session_token
-
-    # Check if the session file exists
-    if [[ -f "$session_file" ]]; then
-      session_token=$(<"$session_file")
-      export OP_SESSION_"$account_alias"="$session_token"
-
-      # Verify if the session token is still valid using `op account get`
-      if op account get >/dev/null 2>&1; then
-        echo "✅ 1Password session for account $account_alias is active."
-        return 0
-      else
-        echo "⚠️ 1Password session for account $account_alias is invalid or expired. Re-authenticating..."
-        rm -f "$session_file"
-      fi
-    fi
-
-    # Proceed to sign in if session is missing or invalid
-    echo "🔑 Signing in to 1Password account $account_alias..."
-    session_token=$(op signin --account "$account_alias" --raw)
-
-    if [[ -z "$session_token" ]]; then
-      echo "❌ 1Password sign-in failed. Please check your credentials."
-      return 1
-    fi
-
-    # Save the session token to the session file
-    echo "$session_token" > "$session_file"
-    chmod 600 "$session_file"
-
-    # Export the session token
-    export OP_SESSION_"$account_alias"="$session_token"
-
-    echo "✅ Signed in to 1Password account $account_alias successfully."
-  }
-
-  # Retrieve the account alias
-  local account_alias
-  account_alias=$(get_account_alias)
-
-  if [[ -z "$account_alias" ]]; then
-    echo "❌ Unable to retrieve 1Password account alias."
-    return 1
-  fi
-
-  # Define the session file path
-  local session_file="$session_dir/session_$account_alias"
-
-  # Handle sign-in with checks within signin_op
-  signin_op "$account_alias" "$session_file"
-}
-
+# ------------------------------------------------------------
 # Initialize the 1Password session manager
-op_session_manager
+# Source the op_session_manager function
+if [ -f "$HOME/.dotfiles/init/opSessionManager.zsh" ]; then
+    source "$HOME/.dotfiles/init/opSessionManager.zsh"
+fi
 
+# ------------------------------------------------------------
+# Source the creds function (important for other functions)
+if [ -f "$HOME/.dotfiles/functions/creds.zsh" ]; then
+    source "$HOME/.dotfiles/functions/creds.zsh"
+fi
 
-#eval $(op signin)
-# 1Password
-# ---
-# EZ cred grabber; Provide itemName/UID for first arg & fieldName of secret/password as the second arg.
-creds() {
-  cmd="op item get \"$1\" --fields \"$2\""
-  eval $cmd
-}
-# ---
-export OPENAI_KEY=`creds "lixusyn5hlqzelvbias36c6vka" "apiKey"`
+# ------------------------------------------------------------
+# Source all alias files
+for file in $HOME/.dotfiles/aliases/*.zsh; do
+    [ -r "$file" ] && source "$file"
+done
 
+# ------------------------------------------------------------
+# Source all export files
+for file in $HOME/.dotfiles/exports/*.zsh; do
+    [ -r "$file" ] && source "$file"
+done
+
+# ------------------------------------------------------------
+# Source all other function files, except creds.zsh
+for file in $HOME/.dotfiles/functions/*.zsh; do
+    [[ "$file" != *"creds.zsh" ]] && [ -r "$file" ] && source "$file"
+done
+
+# ------------------------------------------------------------
+# Source misc.zsh file if it exists
+if [ -f "$HOME/.dotfiles/misc.zsh" ]; then
+    source "$HOME/.dotfiles/misc.zsh"
+fi
+
+# ------------------------------------------------------------
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -194,23 +150,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-oplogin() {
-  eval $(op signin)
-}
-
-alias kc='kubectl'
-
-export KUBECONFIG=$HOME/.kube/kubeconfig.yaml
-export PATH="$PATH:/home/pkmn-trainer/.local/bin"
-
-#function kc() {
-#  KC_COMMAND="$1"
-#  kubectl "$KC_COMMAND"
-#}
-
-function tf() {
-  terraform "$@"
-}
+export PATH="$PATH:/home/red/.local/bin"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -224,111 +164,13 @@ export EDITOR=nvim
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-# Cordon Node
-function lasso() {
-  NODE_NAME="$1"
-  kc cordon "$NODE_NAME"
-}
-
-# Default drain for Kubernetes
-function trench() {
-  NODE_NAME="$1"
-  kc drain "$NODE_NAME" --ignore-daemonsets --delete-emptydir-data --force --grace-period=10
-}
-
 # Created by `pipx` on 2024-02-29 10:44:28
 export PATH="$PATH:/home/red/.local/bin"
 
-# Run against all nodes
-function roan () {
-    # Check if a command was provided
-    if [ -z "$1" ]; then
-        echo "Usage: roan <command>"
-        return 1
-    fi
-
-    NODE_COMMAND="$1"
-    # Fetch all node IPs using kubectl and execute the command on each
-    for ip in $(kubectl get nodes -o wide --no-headers | awk '{print $6}')
-    do
-        echo "Executing on $ip..."
-        ssh root@$ip "$NODE_COMMAND"
-    done
+opFind() {
+  search=$1
+  op item list | grep -i $search | awk '{print $1}'
 }
 
-alias ynv='yq -o json | jnv'
-
-# Set context in kubectl (namespace set)
-alias ksn='kubectl config set-context --current --namespace'
-
-function checkplexstreams() {
-  plexstreams=$(curl -L -s 'http://tautulli.lajas.tech/api/v2?apikey='$(creds 'mbvi72of2jyoxcg6pll662dpwe' 'apiKey')'&cmd=get_activity' | jq -r '.response.data.stream_count')
-  if [ "$plexstreams" -gt 0 ]; then
-    if [ "$plexstreams" -eq 1 ]; then
-      echo "There is $plexstreams stream currently running."
-    else
-      echo "There are $plexstreams streams currently running."
-    fi
-  else
-    echo "There are no streams currently running."
-  fi
-}
-
-function create_repo_and_setup_git() {
-    if [ "$#" -ne 3 ]; then
-        echo "Usage: create_repo_and_setup_git <repo_name> <description> <private (true/false)>"
-        return 1
-    fi
-
-    repo_name=$1
-    description=$2
-    private=$3
-
-    # Get the URL from 1Password
-    repo_url=$(op item get dnpf6mebgjootuflw5hb2jeqbe --format json | jq -r '.urls[].href')
-
-    # Perform the API call to create the repo and capture the output
-    response=$(curl -s -X POST -H "Content-Type: application/json" \
-        -u $(creds 'dnpf6mebgjootuflw5hb2jeqbe' 'user_name'):$(creds 'dnpf6mebgjootuflw5hb2jeqbe' 'password') \
-        -d "{\"name\": \"$repo_name\", \"description\": \"$description\", \"private\": $private}" \
-        $repo_url/api/v1/user/repos)
-
-    # Check if the response contains the repo name to confirm success
-    if echo "$response" | grep -q "\"name\":\"$repo_name\""; then
-        echo "Success! Repository '$repo_name' created."
-
-        # Get the git username
-        git_user=$(creds 'dnpf6mebgjootuflw5hb2jeqbe' 'user_name')
-
-        # Switch to home directory
-        cd ~/$git_user || exit
-
-        # Create a folder for the repo
-        mkdir "$repo_name"
-        cd "$repo_name" || exit
-
-        # Initialize Git repository and push the first commit
-        touch README.md
-        git init
-        git checkout -b main
-        git add README.md
-        git commit -m "first commit"
-
-        # Extract the repository URL without the 'https://' and trailing '/'
-        clean_repo_url=$(echo "$repo_url" | sed -e 's#https://##' -e 's#/$##')
-
-        # Add the remote and push the first commit
-        git remote add origin "git@$clean_repo_url:$git_user/$repo_name.git"
-        git push -u origin main
-
-        echo "Local Git repository initialized and first commit pushed to remote!"
-    else
-        echo "Error: Failed to create repository."
-        echo "$response"  # You can comment this out if you want to fully hide the response in case of failure.
-    fi
-}
-function rip_of () {
-  kubectl -n vault exec -it deployments/vault-jtr -- ofscraper -u $1 -a download -o all -t all
-}
 eval "$(zoxide init zsh)"
 eval "$(gh copilot alias -- zsh)"
