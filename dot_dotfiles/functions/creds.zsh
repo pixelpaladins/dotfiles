@@ -7,6 +7,6 @@ creds() {
         return 1
     fi
     # Fetch the credential using op and echo it
-    local cmd="op item get \"$1\" --fields \"$2\""
+    local cmd="op item get \"$1\" --fields \"$2\" --reveal"
     eval "$cmd"
 }
