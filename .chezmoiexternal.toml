@@ -29,7 +29,7 @@
     stripComponents = 1
 [".config/tmux/tmux.conf"]
     type = "file"
-    url = "https://github.com/gpakosz/.tmux/blob/master/.tmux.conf"
+    url = "https://raw.githubusercontent.com/gpakosz/.tmux/blob/master/.tmux.conf"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
@@ -47,7 +47,7 @@
     refreshPeriod = "168h"
 [".config/nvim/lua/custom/plugins/lualine.lua"]
     type = "file"
-    url = "https://github.com/xero/dotfiles/blob/main/neovim/.config/nvim/lua/plugins/lualine.lua"
+    url = "https://raw.githubusercontent.com/xero/dotfiles/blob/main/neovim/.config/nvim/lua/plugins/lualine.lua"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
