@@ -45,3 +45,9 @@
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+[".config/nvim/lua/custom/plugins/lualine.lua"]
+    type = "file"
+    url = "https://github.com/xero/dotfiles/blob/main/neovim/.config/nvim/lua/plugins/lualine.lua"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "168h"
