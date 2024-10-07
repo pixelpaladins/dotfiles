@@ -1,3 +1,6 @@
+# Load the splash screen
+source "$HOME/.dotfiles/init/00_splash.zsh"
+
 # ------------------------------------------------------------
 # Initialize the 1Password session manager
 # Source the op_session_manager function
