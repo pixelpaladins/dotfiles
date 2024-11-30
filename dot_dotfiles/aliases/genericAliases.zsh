@@ -8,3 +8,5 @@ alias ynv='yq -o json | jnv'
 alias ksn='kubectl config set-context --current --namespace'
 # Because Terraform is too long, too...
 alias tf='terraform'
+# 'chezmoi' is a bit of a mouthful - It's also a bit of a pain to type
+alias cz='chezmoi'
