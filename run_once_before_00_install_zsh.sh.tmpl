@@ -1,5 +1,5 @@
-{{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
+{{ if eq .chezmoi.os "darwin" -}}
 # macOS
 
 # Function to install ZSH on macOS
@@ -49,7 +49,6 @@ set_zsh_mac() {
 install_zsh_mac
 
 {{ else if eq .osid "linux-arch" -}}
-#!/bin/bash
 # Arch Linux
 
 # Function to install ZSH on Arch Linux
@@ -88,7 +87,6 @@ set_zsh_arch() {
 install_zsh_arch
 
 {{ else if eq .osid "ubuntu" }}
-#!/bin/bash
 
 set -euo pipefail
 
