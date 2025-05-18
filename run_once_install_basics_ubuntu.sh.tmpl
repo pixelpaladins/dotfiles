@@ -84,4 +84,11 @@ else
   echo "[chezmoi] kubectl installation failed or version not available."
 fi
 
+if command -v gh &>/dev/null; then
+  if ! gh extension list | grep -q gh-copilot; then
+    echo "[chezmoi] Installing GitHub Copilot CLI extension..."
+    gh extension install github/gh-copilot
+  fi
+fi
+
 {{ end }}
