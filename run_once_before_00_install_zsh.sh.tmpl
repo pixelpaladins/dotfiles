@@ -87,29 +87,37 @@ set_zsh_arch() {
 
 install_zsh_arch
 
-{{ else if eq .osid "linux-debian" -}}
+{{ else if eq .osid "ubuntu" }}
 #!/bin/bash
-# Debian-based (e.g., Ubuntu)
 
-install_zsh_debian() {
-  if [[ "$(getent passwd "$USER" | cut -d: -f7)" == "$(which zsh)" ]]; then
-    echo "ZSH is already the default shell. Skipping installation."
-    return 0
-  fi
+set -euo pipefail
 
-  echo "Installing ZSH on Debian/Ubuntu..."
+echo "[chezmoi] Detected Ubuntu. Ensuring Zsh is installed and configured..."
+
+if command -v zsh &>/dev/null; then
+  echo "[chezmoi] Zsh already installed: $(zsh --version)"
+else
+  echo "[chezmoi] Installing Zsh via apt..."
   sudo apt update
   sudo apt install -y zsh
+fi
 
-  if ! grep -q "$(which zsh)" /etc/shells; then
-    echo "Adding ZSH to /etc/shells..."
-    echo "$(which zsh)" | sudo tee -a /etc/shells
-  fi
+ZSH_PATH="$(command -v zsh)"
 
-  echo "Setting ZSH as the default shell..."
-  chsh -s "$(which zsh)"
-}
+if ! grep -q "$ZSH_PATH" /etc/shells; then
+  echo "[chezmoi] Adding $ZSH_PATH to /etc/shells..."
+  echo "$ZSH_PATH" | sudo tee -a /etc/shells
+fi
 
-install_zsh_debian
-{{ end -}}
+CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
 
+if [[ "$CURRENT_SHELL" != "$ZSH_PATH" ]]; then
+  echo "[chezmoi] Setting $ZSH_PATH as default shell for $USER..."
+  chsh -s "$ZSH_PATH"
+else
+  echo "[chezmoi] $USER already uses Zsh as default shell."
+fi
+
+echo "[chezmoi] Default shell is: $SHELL"
+echo "[chezmoi] You may need to log out and back in, or run: exec $ZSH_PATH"
+{{ end }}
