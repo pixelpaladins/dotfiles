@@ -9,7 +9,9 @@
     executable = true
     refreshPeriod = "168h"
 
-{{ $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
+{{ $zoxideArch := .chezmoi.arch }}
+{{ if eq $zoxideArch "arm64" }}{{ $zoxideArch = "aarch64" }}{{ end }}
+{{ if eq $zoxideArch "amd64" }}{{ $zoxideArch = "x86_64" }}{{ end }}
 
 [".local/bin/zoxide"]
     type = "archive-file"
