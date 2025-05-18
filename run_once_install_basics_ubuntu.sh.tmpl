@@ -1,0 +1,49 @@
+{{ if eq .osid "ubuntu" }}
+#!/bin/bash
+
+set -euo pipefail
+
+echo "[chezmoi] Installing essential packages for Ubuntu..."
+
+sudo apt update
+sudo apt install -y \
+  docker.io \
+  docker-compose \
+  git \
+  curl \
+  unzip \
+  gnupg \
+  lsb-release \
+  zsh \
+  ansible \
+  terraform \
+  python3-pip \
+  netcat \
+  kubectl
+
+# Enable + start Docker
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Add current user to docker group
+if ! groups $USER | grep -qw docker; then
+  echo "[chezmoi] Adding $USER to docker group..."
+  sudo usermod -aG docker "$USER"
+  echo "[chezmoi] Docker group updated. You'll need to log out and back in for it to take effect."
+fi
+
+# Confirm docker installed
+if command -v docker &>/dev/null; then
+  echo "[chezmoi] Docker installed successfully."
+else
+  echo "[chezmoi] Docker installation failed."
+fi
+
+# Confirm kubectl installed
+if command -v kubectl &>/dev/null; then
+  echo "[chezmoi] kubectl installed successfully."
+else
+  echo "[chezmoi] kubectl installation failed or version not available."
+fi
+
+{{ end }}
