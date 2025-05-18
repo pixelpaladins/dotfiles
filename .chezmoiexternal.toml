@@ -2,13 +2,14 @@
 
 [".local/bin/jnv"]
     type = "archive-file"
-    url = "https://github.com/ynqa/jnv/releases/download/v{{ template \"get-github-latest-version\" list \"ynqa/jnv\" }}/jnv-{{ $jnvArch }}-unknown-linux-gnu.tar.xz"
+    url = "https://github.com/ynqa/jnv/releases/download/v{{ template "get-github-latest-version" list "ynqa/jnv" }}/jnv-{{ $jnvArch }}-unknown-linux-gnu.tar.xz"
     path = "jnv-{{ $jnvArch }}-unknown-linux-gnu/jnv"
     executable = true
     refreshPeriod = "168h"
+{{- $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}} 
 [".local/bin/zoxide"]
     type = "archive-file"
-    url = "https://github.com/ajeetdsouza/zoxide/releases/v{{ template "get-github-latest-version" list "ajeetdsouza/zoxide" }}/zoxide-{{ .chezmoi.arch }}-unknown-linux-musl.tar.gz"
+    url = "https://github.com/ajeetdsouza/zoxide/releases/v{{ template "get-github-latest-version" list "ajeetdsouza/zoxide" }}/zoxide-{{ $zoxideArch }}-unknown-linux-musl.tar.gz"
     path = "zoxide"
     executable = true
     refreshPeriod = "168h"
