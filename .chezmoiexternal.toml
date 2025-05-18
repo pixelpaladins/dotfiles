@@ -10,6 +10,12 @@
     path = "zoxide"
     executable = true
     refreshPeriod = "168h"
+[".local/bin/delta"]
+    type = "archive-file"
+    url = "https://github.com/dandavison/delta/releases/download/{{ template \"get-github-latest-version\" list \"dandavison/delta\" }}/delta-{{ template \"get-github-latest-version\" list \"dandavison/delta\" }}-{{ .chezmoi.arch }}-unknown-linux-gnu.tar.gz"
+    path = "delta-{{ template \"get-github-latest-version\" list \"dandavison/delta\" }}-{{ .chezmoi.arch }}-unknown-linux-gnu/delta"
+    executable = true
+    refreshPeriod = "168h" 
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
