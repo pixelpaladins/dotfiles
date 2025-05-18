@@ -6,7 +6,7 @@
     path = "jnv-{{ $jnvArch }}-unknown-linux-gnu/jnv"
     executable = true
     refreshPeriod = "168h"
-    
+
 {{- $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
 
 [".local/bin/zoxide"]
@@ -15,7 +15,7 @@
     path = "zoxide"
     executable = true
     refreshPeriod = "168h"
-    
+
 {{ $deltaArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
 
 [".local/bin/delta"]
@@ -24,7 +24,7 @@
     path = "delta-{{ template "get-github-latest-version" list "dandavison/delta" }}-{{ $deltaArch }}-unknown-linux-gnu/delta"
     executable = true
     refreshPeriod = "168h"
- 
+
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
