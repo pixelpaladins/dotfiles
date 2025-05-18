@@ -8,11 +8,10 @@
     refreshPeriod = "168h"
 
 {{ $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
-{{ $zoxideVersion := (output "chezmoi" "template" "-c" "{{ template \"get-github-latest-version\" list \"ajeetdsouza/zoxide\" }}") | trim -}}
 
 [".local/bin/zoxide"]
     type = "archive-file"
-    url = "https://github.com/ajeetdsouza/zoxide/releases/download/v{{ $zoxideVersion }}/zoxide-{{ $zoxideVersion }}-{{ $zoxideArch }}-unknown-linux-musl.tar.gz"
+    url = "https://github.com/ajeetdsouza/zoxide/releases/download/v{{ template \"get-github-latest-version\" list \"ajeetdsouza/zoxide\" }}/zoxide-{{ template \"get-github-latest-version\" list \"ajeetdsouza/zoxide\" }}-{{ $zoxideArch }}-unknown-linux-musl.tar.gz"
     path = "zoxide"
     executable = true
     refreshPeriod = "168h"
