@@ -1,0 +1,10 @@
+#!/bin/bash
+{{ if eq .chezmoi.os "linux" }}
+
+set -euo pipefail
+
+echo "[chezmoi] Running Ansible playbook..."
+
+ansible-playbook ~/.local/share/chezmoi/playbooks/bootstrap.yml --connection=local --inventory 127.0.0.1,
+
+{{ end }}
