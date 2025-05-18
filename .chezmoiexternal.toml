@@ -8,6 +8,7 @@
     refreshPeriod = "168h"
 
 {{ $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
+
 {{ $zoxideVersion := template "get-github-latest-version" list "ajeetdsouza/zoxide" -}}
 
 [".local/bin/zoxide"]
