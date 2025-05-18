@@ -27,7 +27,7 @@
 
 [".local/bin/jq"]
     type = "file"
-    url = "https://github.com/jqlang/jq/releases/download/jq-{{ template "get-github-latest-version" list "jqlang/jq" }}/jq-linux-{{ .chezmoi.arch }}"
+    url = "https://github.com/jqlang/jq/releases/download/{{ template "get-github-latest-version" list "jqlang/jq" }}/jq-linux-{{ .chezmoi.arch }}"
     executable = true
     refreshPeriod = "168h"
 
