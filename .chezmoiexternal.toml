@@ -1,7 +1,7 @@
 [".local/bin/jnv"]
     type = "archive-file"
-    url = "https://github.com/ynqa/jnv/releases/download/v{{ template "get-github-latest-version" list "ynqa/jnv" }}/jnv-x86_64-unknown-linux-gnu.tar.xz"
-    path = "jnv-x86_64-unknown-linux-gnu/jnv"
+    url = "https://github.com/ynqa/jnv/releases/download/v{{ template \"get-github-latest-version\" list \"ynqa/jnv\" }}/jnv-{{ .chezmoi.arch }}-unknown-linux-gnu.tar.xz"
+    path = "jnv-{{ .chezmoi.arch }}-unknown-linux-gnu/jnv"
     executable = true
     refreshPeriod = "168h"
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
