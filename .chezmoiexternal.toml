@@ -6,7 +6,8 @@
     path = "jnv-{{ $jnvArch }}-unknown-linux-gnu/jnv"
     executable = true
     refreshPeriod = "168h"
-{{- $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}} 
+{{- $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
+
 [".local/bin/zoxide"]
     type = "archive-file"
     url = "https://github.com/ajeetdsouza/zoxide/releases/v{{ template "get-github-latest-version" list "ajeetdsouza/zoxide" }}/zoxide-{{ $zoxideArch }}-unknown-linux-musl.tar.gz"
@@ -21,53 +22,62 @@
     path = "delta-{{ template "get-github-latest-version" list "dandavison/delta" }}-{{ $deltaArch }}-unknown-linux-gnu/delta"
     executable = true
     refreshPeriod = "168h"
+ 
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+ 
 [".oh-my-zsh"]
     type = "archive"
     url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+ 
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+ 
 [".oh-my-zsh/custom/themes/powerlevel10k"]
     type = "archive"
     url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"
     exact = true
     stripComponents = 1
+ 
 [".config/tmux/tmux.conf"]
     type = "file"
     url = "https://raw.githubusercontent.com/gpakosz/.tmux/refs/heads/master/.tmux.conf"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+ 
 [".tmux/plugins/tmux-resurrect"]
     type = "archive"
     url = "https://github.com/tmux-plugins/tmux-resurrect/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+ 
 [".config/nvim"]
     type = "archive"
     url = "https://github.com/llajas/kickstart.nvim/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+ 
 [".config/nvim/lua/custom/plugins/lualine.lua"]
     type = "file"
     url = "https://raw.githubusercontent.com/xero/dotfiles/refs/heads/main/neovim/.config/nvim/lua/plugins/lualine.lua"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+ 
 [".config/nvim/pack/github/start/copilot.vim"]
     type = "archive"
     url = "https://github.com/github/copilot.vim/archive/master.tar.gz"
