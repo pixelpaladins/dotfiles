@@ -56,6 +56,13 @@
     path = "gron"
     executable = true
     refreshPeriod = "168h"
+    
+[".local/bin/kubectl-neat"]
+    type = "archive-file"
+    url = "https://github.com/itaysk/kubectl-neat/releases/download/v{{ template "get-github-latest-version" list "itaysk/kubectl-neat" }}/kubectl-neat_linux_{{ .chezmoi.arch }}.tar.gz"
+    path = "kubectl-neat"
+    executable = "true"
+    refreshPeriod = "168h"
 
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
     type = "archive"
