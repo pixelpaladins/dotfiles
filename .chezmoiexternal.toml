@@ -16,7 +16,9 @@
     executable = true
     refreshPeriod = "168h"
 
-{{ $deltaArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
+{{ $deltaArch := .chezmoi.arch }}
+{{ if eq $deltaArch "arm64" }}{{ $deltaArch = "aarch64" }}{{ end }}
+{{ if eq $deltaArch "amd64" }}{{ $deltaArch = "x86_64" }}{{ end }}
 
 [".local/bin/delta"]
     type = "archive-file"
