@@ -86,5 +86,30 @@ set_zsh_arch() {
 }
 
 install_zsh_arch
+
+{{ else if eq .osid "linux-debian" -}}
+#!/bin/bash
+# Debian-based (e.g., Ubuntu)
+
+install_zsh_debian() {
+  if [[ "$(getent passwd "$USER" | cut -d: -f7)" == "$(which zsh)" ]]; then
+    echo "ZSH is already the default shell. Skipping installation."
+    return 0
+  fi
+
+  echo "Installing ZSH on Debian/Ubuntu..."
+  sudo apt update
+  sudo apt install -y zsh
+
+  if ! grep -q "$(which zsh)" /etc/shells; then
+    echo "Adding ZSH to /etc/shells..."
+    echo "$(which zsh)" | sudo tee -a /etc/shells
+  fi
+
+  echo "Setting ZSH as the default shell..."
+  chsh -s "$(which zsh)"
+}
+
+install_zsh_debian
 {{ end -}}
 
