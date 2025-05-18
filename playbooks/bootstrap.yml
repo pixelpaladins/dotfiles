@@ -19,6 +19,7 @@
       - netcat
       - kubectl
       - fzf
+      - tmux
 
   tasks:
     - name: Install core packages using the appropriate package manager
