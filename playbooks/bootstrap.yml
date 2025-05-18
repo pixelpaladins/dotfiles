@@ -1,7 +1,7 @@
 # ~/.local/share/chezmoi/playbooks/bootstrap.yml
 ---
 - name: Install core packages
-  hosts: all
+  hosts: localhost
   become: true
   vars:
     core_packages:
@@ -14,7 +14,6 @@
       - gnupg
       - lsb-release
       - zsh
-      - ansible
       - terraform
       - python3-pip
       - netcat
