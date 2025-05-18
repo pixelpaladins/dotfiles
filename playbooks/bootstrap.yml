@@ -20,6 +20,7 @@
       - kubectl
       - fzf
       - tmux
+      - libvirt-clients
 
   tasks:
     - name: Install core packages using the appropriate package manager
