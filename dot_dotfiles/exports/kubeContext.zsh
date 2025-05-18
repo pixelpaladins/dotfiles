@@ -10,9 +10,15 @@ if [[ -f "$KUBECONFIG_PATH" ]]; then
 else
   echo "⚠️  KUBECONFIG file not found. Fetching from 1Password..."
 
+  # Check if .kube directory exists, if not create it
+  if [[ ! -d "$HOME/.kube" ]]; then
+    mkdir -p "$HOME/.kube"
+    echo "✅ Created .kube directory at $HOME/.kube"
+  fi
+
   # Use op to fetch the document and write it to the kubeconfig path
   op document get '3pmmbxpwty7zvxinnvlsujww44' > "$KUBECONFIG_PATH"
-  
+
   # Set proper permissions for the kubeconfig file
   chmod 600 "$KUBECONFIG_PATH"
 
