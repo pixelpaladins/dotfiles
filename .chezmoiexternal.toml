@@ -4,6 +4,12 @@
     path = "jnv-{{ .chezmoi.arch }}-unknown-linux-gnu/jnv"
     executable = true
     refreshPeriod = "168h"
+[".local/bin/zoxide"]
+    type = "archive-file"
+    url = "https://github.com/ajeetdsouza/zoxide/releases/download/v{{ template \"get-github-latest-version\" list \"ajeetdsouza/zoxide\" }}/zoxide-{{ .chezmoi.arch }}-unknown-linux-musl.tar.gz"
+    path = "zoxide"
+    executable = true
+    refreshPeriod = "168h"
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
