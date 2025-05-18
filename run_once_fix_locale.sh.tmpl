@@ -1,0 +1,27 @@
+#!/bin/sh
+# ~/.local/share/chezmoi/scripts/run_once_fix_locale.sh.tmpl
+
+set -e
+
+# Only bother if this is Linux and LANG is unset or set to "C"
+if [ "{{ .chezmoi.os }}" != "linux" ]; then
+  exit 0
+fi
+
+current_locale=$(locale | grep LANG= | cut -d= -f2)
+if [ "$current_locale" = "C" ] || [ -z "$current_locale" ]; then
+  echo "[fix-locale] Detected non-UTF8 locale: $current_locale"
+
+  if [ -f /etc/lsb-release ] || grep -qi ubuntu /etc/os-release 2>/dev/null; then
+    echo "[fix-locale] Applying locale fix for Ubuntu"
+    sudo locale-gen en_US.UTF-8
+    echo 'LANG=en_US.UTF-8\nLC_ALL=en_US.UTF-8' | sudo tee /etc/default/locale
+    sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+  elif [ -f /etc/arch-release ]; then
+    echo "[fix-locale] Arch system -- should be fine, skipping."
+  else
+    echo "[fix-locale] Unknown Linux distro. Skipping locale fix."
+  fi
+else
+  echo "[fix-locale] UTF-8 locale already set: $current_locale"
+fi
