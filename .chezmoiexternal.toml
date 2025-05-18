@@ -6,6 +6,7 @@
     path = "jnv-{{ $jnvArch }}-unknown-linux-gnu/jnv"
     executable = true
     refreshPeriod = "168h"
+    
 {{- $zoxideArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
 
 [".local/bin/zoxide"]
@@ -14,6 +15,7 @@
     path = "zoxide"
     executable = true
     refreshPeriod = "168h"
+    
 {{ $deltaArch := (eq .chezmoi.arch "arm64") | ternary "aarch64" .chezmoi.arch -}}
 
 [".local/bin/delta"]
