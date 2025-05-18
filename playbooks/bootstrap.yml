@@ -1,0 +1,28 @@
+# ~/.local/share/chezmoi/playbooks/bootstrap.yml
+---
+- name: Install core packages
+  hosts: all
+  become: true
+  vars:
+    core_packages:
+      - docker.io
+      - docker-compose
+      - git
+      - gh
+      - curl
+      - unzip
+      - gnupg
+      - lsb-release
+      - zsh
+      - ansible
+      - terraform
+      - python3-pip
+      - netcat
+      - kubectl
+      - fzf
+
+  tasks:
+    - name: Install core packages using the appropriate package manager
+      ansible.builtin.package:
+        name: "{{ core_packages }}"
+        state: present

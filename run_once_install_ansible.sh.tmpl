@@ -1,0 +1,35 @@
+#!/bin/bash
+{{ if eq .chezmoi.os "linux" }}
+
+set -euo pipefail
+
+echo "[chezmoi] Checking for Ansible..."
+
+if ! command -v ansible-playbook &>/dev/null; then
+  echo "[chezmoi] Ansible not found. Installing prerequisites..."
+
+  # Attempt to detect and install Ansible using native package manager
+  if command -v apt &>/dev/null; then
+    sudo apt update
+    sudo apt install -y software-properties-common python3-pip python3-venv
+    pip3 install --user ansible
+  elif command -v dnf &>/dev/null; then
+    sudo dnf install -y python3-pip python3-virtualenv
+    pip3 install --user ansible
+  elif command -v pacman &>/dev/null; then
+    sudo pacman -Sy --noconfirm python-pip
+    pip3 install --user ansible
+  elif command -v apk &>/dev/null; then
+    sudo apk add --no-cache py3-pip
+    pip3 install --user ansible
+  else
+    echo "[chezmoi] Unsupported distro. Please install Ansible manually."
+    exit 1
+  fi
+
+  echo "[chezmoi] Ansible installed successfully."
+else
+  echo "[chezmoi] Ansible is already installed."
+fi
+
+{{ end }}
