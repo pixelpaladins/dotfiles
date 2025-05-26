@@ -14,7 +14,7 @@ check_ansible_installed() {
 check_ansible_version() {
     if command -v ansible &>/dev/null; then
         echo "[chezmoi] Ansible is installed successfully."
-        ANSIBLE_VERSION=$(ansible --version | head -n 1 | awk '{print $2}')
+        ANSIBLE_VERSION=$(ansible --version | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
         echo "[chezmoi] Ansible version: $ANSIBLE_VERSION"
     else
         echo "[chezmoi] Ansible did not install properly! Please check the installation logs."
@@ -75,7 +75,7 @@ echo "[chezmoi] Prewarming sudo..."
 sudo true
 echo "[chezmoi] Checking if Ansible is already installed..."
 check_ansible_installed
-echo "[chezmoi] Installing Ansible..."
+echo "[chezmoi] Ansible not found! Proceeding with installation..."
 echo "[chezmoi] This may take a while, please be patient..."
 install_ansible
 echo "[chezmoi] Ansible installation completed successfully!"
