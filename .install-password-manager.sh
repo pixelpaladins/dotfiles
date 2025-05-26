@@ -1,0 +1,81 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Pre-flight check function for 1Password CLI - Exit if already installed
+check_1password_installed() {
+    if command -v op &>/dev/null; then
+        echo "[chezmoi] 1Password CLI is already installed."
+        exit 0
+    fi
+}
+
+# Function to install 1Password CLI based on the detected package manager
+install_1password() {
+    if command -v brew &>/dev/null; then
+        # macOS using Homebrew
+        echo "[chezmoi] Installing 1Password CLI via Homebrew..."
+        brew update
+        brew install 1password-cli || true
+        echo "[chezmoi] 1Password CLI installation completed."
+    elif command -v apt-get &>/dev/null; then
+        # Debian/Ubuntu using apt-get
+        echo "[chezmoi] Installing 1Password CLI for Debian/Ubuntu..."
+        curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+        echo 'deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main' | sudo tee /etc/apt/sources.list.d/1password.list > /dev/null
+        sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/
+        curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol
+        sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
+        curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmour --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+        sudo apt update -qq
+        sudo apt install -y 1password-cli -qq || true
+        echo "[chezmoi] 1Password CLI installation completed."
+    elif command -v dnf &>/dev/null; then
+        # Fedora using dnf
+        echo "[chezmoi] Installing 1Password CLI for Fedora..."
+        sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
+        sudo sh -c 'echo -e "[1password]\nname=1Password Repository\nbaseurl=https://downloads.1password.com/linux/rpm/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=0" > /etc/yum.repos.d/1password.repo'
+        sudo dnf check-update -y 1password-cli
+        sudo dnf install 1password-cli -y || true
+        echo "[chezmoi] 1Password CLI installation completed."
+    elif command -v pacman &>/dev/null; then
+        # Arch Linux using pacman
+        echo "[chezmoi] Installing 1Password CLI for Arch Linux..."
+        sudo pacman -S --noconfirm --needed 1password-cli || true
+        echo "[chezmoi] 1Password CLI installation completed."
+    else
+        # Fallback: manual binary install
+        echo "[chezmoi] No supported package manager found. Falling back to direct binary install..."
+        VERSION="v2.30.3"
+        ARCH_RAW="$(uname -m)"
+        case "$ARCH_RAW" in
+            x86_64) ARCH="amd64" ;;
+            aarch64 | arm64) ARCH="arm64" ;;
+            armv7l) ARCH="arm" ;;
+            i386) ARCH="386" ;;
+            *) echo "[chezmoi] Unsupported architecture: $ARCH_RAW" && exit 1 ;;
+        esac
+        curl -LO "https://cache.agilebits.com/dist/1P/op2/pkg/${VERSION}/op_linux_${ARCH_RAW}_${VERSION}.zip"
+        unzip -d op "op_linux_${ARCH_RAW}_${VERSION}.zip"
+        sudo mv op/op /usr/local/bin/op
+        rm -rf op* || true
+
+        sudo groupadd -f onepassword-cli
+        sudo chgrp onepassword-cli /usr/local/bin/op
+        sudo chmod g+s /usr/local/bin/op
+        echo "[chezmoi] 1Password CLI manual installation completed."
+    fi
+}
+
+
+echo "[chezmoi] Prewarming sudo..."
+sudo true
+
+echo "[chezmoi] Checking if 1Password CLI is already installed..."
+check_1password_installed
+
+echo "[chezmoi] Installing 1Password CLI..."
+echo "[chezmoi] This may take a few moments..."
+install_1password
+
+echo "[chezmoi] 1Password CLI installation completed successfully!"
