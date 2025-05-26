@@ -20,18 +20,18 @@ install_1password() {
         echo "[chezmoi] 1Password CLI installation completed."
     elif command -v apt-get &>/dev/null; then
         # Debian/Ubuntu using apt-get
-        sudo apt update -qq > /dev/null || true
-        sudo apt install -y -qq apt-transport-https ca-certificates curl gnupg > /dev/null || true
+        sudo apt-get update -qq > /dev/null || true
+        sudo apt-get install -y -qq apt-transport-https ca-certificates curl gnupg > /dev/null || true
         ARCH=$(dpkg --print-architecture)
         echo "[chezmoi] Installing 1Password CLI for Debian/Ubuntu..."
         curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
         echo "deb [arch=${ARCH} signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/${ARCH} stable main" | sudo tee /etc/apt/sources.list.d/1password.list > /dev/null
         sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/
-        curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol
+        curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol >/dev/null
         sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
         curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmour --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
-        sudo apt update -qq
-        sudo apt install -y 1password-cli -qq || true
+        sudo apt-get update -qq
+        sudo apt-get install -y 1password-cli -qq || true
         echo "[chezmoi] 1Password CLI installation completed."
     elif command -v dnf &>/dev/null; then
         # Fedora using dnf
