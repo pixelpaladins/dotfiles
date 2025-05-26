@@ -2,21 +2,16 @@
 
 set -euo pipefail
 
-# Pre-flight Ansible check. Exit if Ansible is not installed.
+# Pre-flight Ansible check function. Exit script with error 1 if Ansible is not installed
 check_ansible_installed() {
     if ! command -v ansible &>/dev/null; then
         echo "[chezmoi] Ansible is not installed. Please install Ansible first and re-run this Chezmoi setup."
         exit 1
     fi
 }
-
 echo "[chezmoi] Prewarming sudo..."
 sudo true
 echo "[chezmoi] Checking if Ansible is installed..."
 check_ansible_installed
 echo "[chezmoi] Ansible has been detected! Continuing with the Chezmoi setup..."
-pwd
-echo "[chezmoi] Changing directory to the Chezmoi configuration directory..."
-cd ~/.local/share/chezmoi/playbooks || { echo "[chezmoi] Failed to change directory to ~/.local/share/chezmoi/playbooks"; exit 1; }
-echo "[chezmoi] Executing the Ansible playbook..."
-ansible-playbook .bootstrap.yml --connection=local || { echo "[chezmoi] Ansible playbook execution failed!"; exit 1; }
+ansible-playbook ~/.local/share/chezmoi/playbooks/bootstrap.yml --connection=local || { echo "[chezmoi] Ansible playbook execution failed!"; exit 1; }
