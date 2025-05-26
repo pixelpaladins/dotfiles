@@ -15,8 +15,9 @@ sudo true
 echo "[chezmoi] Checking if Ansible is installed..."
 check_ansible_installed
 echo "[chezmoi] Ansible has been detected! Continuing with the Chezmoi setup..."
-
-# Change directory to the location of the playbook.
-cd "$(dirname "$0")"
+pwd
+# Determine the source directory using chezmoi
+CHEZMOI_SOURCE="$(chezmoi source-path)"
+cd "$CHEZMOI_SOURCE"
 
 ansible-playbook ./playbooks/bootstrap.yml --connection=local
