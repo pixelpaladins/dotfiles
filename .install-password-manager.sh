@@ -17,7 +17,6 @@ install_1password() {
         echo "[chezmoi] Installing 1Password CLI via Homebrew..."
         brew update
         brew install 1password-cli || true
-        echo "[chezmoi] 1Password CLI installation completed."
     elif command -v apt-get &>/dev/null; then
         # Debian/Ubuntu using apt-get
         sudo apt-get update -qq > /dev/null || true
@@ -32,7 +31,6 @@ install_1password() {
         curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmour --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
         sudo apt-get update -qq
         sudo apt-get install -y 1password-cli -qq >/dev/null|| true
-        echo "[chezmoi] 1Password CLI installation completed."
     elif command -v dnf &>/dev/null; then
         # Fedora using dnf
         echo "[chezmoi] Installing 1Password CLI for Fedora..."
@@ -40,12 +38,10 @@ install_1password() {
         sudo sh -c 'echo -e "[1password]\nname=1Password Repository\nbaseurl=https://downloads.1password.com/linux/rpm/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=0" > /etc/yum.repos.d/1password.repo'
         sudo dnf check-update -y 1password-cli
         sudo dnf install 1password-cli -y || true
-        echo "[chezmoi] 1Password CLI installation completed."
     elif command -v pacman &>/dev/null; then
         # Arch Linux using pacman
         echo "[chezmoi] Installing 1Password CLI for Arch Linux..."
         sudo pacman -S --noconfirm --needed 1password-cli || true
-        echo "[chezmoi] 1Password CLI installation completed."
     else
         # Fallback: manual binary install
         echo "[chezmoi] No supported package manager found. Falling back to direct binary install..."
