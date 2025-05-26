@@ -16,8 +16,7 @@ echo "[chezmoi] Checking if Ansible is installed..."
 check_ansible_installed
 echo "[chezmoi] Ansible has been detected! Continuing with the Chezmoi setup..."
 pwd
-# Determine the source directory using chezmoi
-CHEZMOI_SOURCE="$(chezmoi source-path)"
-cd "$CHEZMOI_SOURCE"
-
-ansible-playbook ./playbooks/bootstrap.yml --connection=local
+echo "[chezmoi] Changing directory to the Chezmoi configuration directory..."
+cd ~/.local/share/chezmoi/playbooks || { echo "[chezmoi] Failed to change directory to ~/.local/share/chezmoi/playbooks"; exit 1; }
+echo "[chezmoi] Executing the Ansible playbook..."
+ansible-playbook .bootstrap.yml --connection=local || { echo "[chezmoi] Ansible playbook execution failed!"; exit 1; }
