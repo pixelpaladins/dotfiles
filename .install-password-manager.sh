@@ -22,7 +22,7 @@ install_1password() {
         export DEBIAN_FRONTEND=noninteractive
         export DEBCONF_NOWARNINGS=yes
         sudo apt-get update -qq > /dev/null || true
-        sudo apt-get install -y -qq --no-install-recommends apt-utils apt-transport-https ca-certificates curl gnupg 2>/dev/null
+        sudo apt-get install -y -qq apt-transport-https ca-certificates curl gnupg > /dev/null || true
         ARCH=$(dpkg --print-architecture)
         echo "[chezmoi] Installing 1Password CLI for Debian/Ubuntu..."
         curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
