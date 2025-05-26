@@ -1,0 +1,20 @@
+# group_vars/development_tools.yml
+core_packages:
+  - build-essential         # Debian/Ubuntu meta-package (safe on apt only)
+  - docker
+  - docker.io
+  - docker-compose
+  - git
+  - gh
+  - curl
+  - unzip
+  - gnupg
+  - lsb-release
+  - zsh
+  - terraform
+  - python3-pip
+  - netcat
+  - kubectl
+  - fzf
+  - tmux
+  - libvirt-clients

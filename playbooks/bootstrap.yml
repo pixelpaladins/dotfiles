@@ -3,24 +3,6 @@
 - name: Install core packages
   hosts: localhost
   become: true
-  vars:
-    core_packages:
-      - docker.io
-      - docker-compose
-      - git
-      - gh
-      - curl
-      - unzip
-      - gnupg
-      - lsb-release
-      - zsh
-      - terraform
-      - python3-pip
-      - netcat
-      - kubectl
-      - fzf
-      - tmux
-      - libvirt-clients
 
   tasks:
     - name: Install core packages using the appropriate package manager
