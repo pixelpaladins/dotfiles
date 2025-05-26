@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+# Move to the directory where this script is located
+cd "$(dirname "$0")"
+
 # Pre-flight Ansible check function. Exit script with error 1 if Ansible is not installed
 check_ansible_installed() {
     if ! command -v ansible &>/dev/null; then
@@ -9,9 +12,12 @@ check_ansible_installed() {
         exit 1
     fi
 }
+
 echo "[chezmoi] Prewarming sudo..."
 sudo true
+
 echo "[chezmoi] Checking if Ansible is installed..."
 check_ansible_installed
+
 echo "[chezmoi] Ansible has been detected! Continuing with the Chezmoi setup..."
 ansible-playbook ./playbooks/bootstrap.yml --connection=local
