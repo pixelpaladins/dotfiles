@@ -31,7 +31,7 @@ install_1password() {
         sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
         curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmour --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
         sudo apt-get update -qq
-        sudo apt-get install -y 1password-cli -qq || true
+        sudo apt-get install -y 1password-cli -qq >/dev/null|| true
         echo "[chezmoi] 1Password CLI installation completed."
     elif command -v dnf &>/dev/null; then
         # Fedora using dnf
