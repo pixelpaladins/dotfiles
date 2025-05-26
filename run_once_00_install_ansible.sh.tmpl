@@ -41,14 +41,14 @@ install_ansible() {
 
     {{ else if eq .osid "linux-debian" }}
     export DEBIAN_FRONTEND=noninteractive
-    sudo apt-get update -qq
-    sudo apt-get install wget gpg -y -qq
+    sudo apt-get update -qq > /dev/null
+    sudo apt-get install wget gpg -y -qq > /dev/null
     # Get debian code name
     DEBIAN_CODENAME=$(. /etc/os-release && echo $VERSION_CODENAME)
     wget -qO- "https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0x6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367" | sudo gpg --dearmour -o /usr/share/keyrings/ansible-archive-keyring.gpg
     echo "deb http://deb.debian.org/debian ${DEBIAN_CODENAME}-backports main" | sudo tee /etc/apt/sources.list.d/backports.list > /dev/null
-    sudo apt-get update -qq
-    sudo apt-get install software-properties-common python3 python3-pip -y -qq
+    sudo apt-get update -qq > /dev/null
+    sudo apt-get install software-properties-common python3 python3-pip -y -qq > /dev/null
     sudo apt-get install ansible -t ${DEBIAN_CODENAME}-backports -y -qq || true
     check_ansible_version
 
