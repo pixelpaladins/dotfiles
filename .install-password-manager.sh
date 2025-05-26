@@ -75,7 +75,7 @@ sudo true
 echo "[chezmoi] Checking if 1Password CLI is already installed..."
 check_1password_installed
 
-echo "[chezmoi] Installing 1Password CLI..."
+echo "[chezmoi] 1Password CLI not found! Proceeding with installation..."
 echo "[chezmoi] This may take a few moments..."
 install_1password
 
