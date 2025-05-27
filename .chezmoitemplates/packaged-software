@@ -25,11 +25,6 @@ development_tools:
   - name: fzf
   - name: tmux
 
-  # --- IaC / cloud --------------------------------------------------------
-  - name: terraform
-  - name: python3-pip
-  - name: kubectl
-
   # --- networking ---------------------------------------------------------
   - name: netcat
     Debian: netcat-openbsd
