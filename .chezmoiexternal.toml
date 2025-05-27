@@ -56,6 +56,12 @@
     path = "gron"
     executable = true
     refreshPeriod = "168h"
+
+[".local/bin/kubectl"]
+    type = "file"
+    url = "https://dl.k8s.io/release/v{{ template "get-github-latest-version" list "kubernetes/kubernetes" }}/bin/linux/{{ .chezmoi.arch }}/kubectl"
+    executable = true
+    refreshPeriod = "168h"
     
 [".local/bin/kubectl-neat"]
     type = "archive-file"
