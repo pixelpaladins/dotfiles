@@ -1,0 +1,37 @@
+# playbooks/group_vars/development_tools.yml.tmpl
+# Rendered by chezmoi → development_tools.yml
+# Consumed by the "common_packages" role
+
+development_tools:
+  # --- compiler / build meta-pkg -----------------------------------------
+  - name: build-essential                 # Debian/Ubuntu meta-package
+    RedHat: "@Development Tools"          # dnf group on Fedora/RHEL  [oai_citation:0‡Fedora Project Docs](https://docs.fedoraproject.org/en-US/quick-docs/upgrading-fedora-online/?utm_source=chatgpt.com)
+
+  # --- container stack ---------------------------------------------------
+  - name: docker
+    Debian: docker.io                     # DEB ships as "docker.io"  [oai_citation:1‡Debian Packages](https://packages.debian.org/sid/docker.io?utm_source=chatgpt.com)
+
+  - name: docker-compose                  # identical on all three OS families
+
+  # --- SCM & VCS ---------------------------------------------------------
+  - name: git
+  - name: gh
+
+  # --- general CLI utils -------------------------------------------------
+  - name: curl
+  - name: unzip
+  - name: gnupg
+  - name: lsb-release
+    RedHat: redhat-lsb-core               # provides `lsb_release` on Fedora/RHEL  [oai_citation:2‡CloudCone](https://cloudcone.com/docs/article/how-to-fix-lsb_release-command-not-found-in-centos-8/?utm_source=chatgpt.com)
+  - name: zsh
+  - name: fzf
+  - name: tmux
+
+  # --- networking --------------------------------------------------------
+  - name: netcat
+    Debian: netcat-openbsd               # default implementation on Debian ≥12  [oai_citation:3‡Debian Packages](https://packages.debian.org/sid/netcat-openbsd?utm_source=chatgpt.com)
+    RedHat: nmap-ncat                    # Netcat replacement packaged with Nmap  [oai_citation:4‡Fedora Packages](https://packages.fedoraproject.org/pkgs/nmap/nmap-ncat/index.html?utm_source=chatgpt.com)
+
+  # --- virtualization helpers -------------------------------------------
+  - name: libvirt-clients
+    RedHat: libvirt-client               # singular on Fedora/RHEL  [oai_citation:5‡Fedora Packages](https://packages.fedoraproject.org/pkgs/libvirt/libvirt-client?utm_source=chatgpt.com)
