@@ -11,10 +11,10 @@ log() { printf '[chezmoi] %s\n' "$*"; }
 # Render-time constant: where the *source* repo lives on this host.
 SOURCE_ROOT="{{ .chezmoi.sourceDir }}"
 
-if [[ -d "$HOME/init-playbooks" ]]; then
-  PLAYBOOK_DIR="$HOME/init-playbooks"             # normal cloned workflow
+if [[ -d "$HOME/.init-playbooks" ]]; then
+  PLAYBOOK_DIR="$HOME/.init-playbooks"             # normal cloned workflow
 else
-  PLAYBOOK_DIR="$SOURCE_ROOT/init-playbooks"      # container/bind-mount test
+  PLAYBOOK_DIR="$SOURCE_ROOT/.init-playbooks"      # container/bind-mount test
 fi
 
 PLAYBOOK_FILE="${PLAYBOOK_DIR}/bootstrap.yml"
