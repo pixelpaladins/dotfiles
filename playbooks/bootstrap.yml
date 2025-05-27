@@ -4,8 +4,5 @@
   hosts: localhost
   become: true
 
-  tasks:
-    - name: Install core packages using the appropriate package manager
-      ansible.builtin.package:
-        name: "{{ core_packages }}"
-        state: present
+  roles:
+    - common_packages
