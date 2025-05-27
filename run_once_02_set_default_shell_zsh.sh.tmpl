@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Runs as the *target user*; will escalate when needed
 set -euo pipefail
 
 ZSH_PATH="$(command -v zsh)"
+TARGET_USER="${USER:-$(whoami)}"
 
-# Bail if zsh isn’t installed (e.g., playbook failed)
+# Bail if zsh isn’t installed
 if [[ -z "${ZSH_PATH}" ]]; then
   echo "[chezmoi] zsh not found; skipping shell switch."
   exit 0
 fi
 
-CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
+CURRENT_SHELL="$(getent passwd "$TARGET_USER" | cut -d: -f7)"
 if [[ "${CURRENT_SHELL}" == "${ZSH_PATH}" ]]; then
-  echo "[chezmoi] $USER already uses zsh."
+  echo "[chezmoi] $TARGET_USER already uses zsh."
   exit 0
 fi
 
@@ -22,5 +22,5 @@ if ! grep -qx "${ZSH_PATH}" /etc/shells; then
   echo "${ZSH_PATH}" | sudo tee -a /etc/shells >/dev/null
 fi
 
-echo "[chezmoi] Switching $USER to zsh → ${ZSH_PATH}"
-sudo chsh -s "${ZSH_PATH}" "${USER}"
+echo "[chezmoi] Switching $TARGET_USER to zsh → ${ZSH_PATH}"
+sudo chsh -s "${ZSH_PATH}" "${TARGET_USER}"
