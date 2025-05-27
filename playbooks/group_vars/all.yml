@@ -1,20 +1,23 @@
-# group_vars/development_tools.yml
-core_packages:
-  - build-essential         # Debian/Ubuntu meta-package (safe on apt only)
-  - docker
+# group_vars/all.yml
+core_packages_debian:
+  - build-essential
   - docker.io
+  - lsb-release
+
+core_packages_common:
+  - docker
   - docker-compose
   - git
   - gh
   - curl
   - unzip
   - gnupg
-  - lsb-release
   - zsh
-  - terraform
   - python3-pip
   - netcat
   - kubectl
   - fzf
   - tmux
   - libvirt-clients
+
+core_packages: "{{ core_packages_common + (core_packages_debian if ansible_facts['os_family'] == 'Debian' else []) }}"
