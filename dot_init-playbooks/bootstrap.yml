@@ -1,0 +1,8 @@
+# ~/.local/share/chezmoi/playbooks/bootstrap.yml
+---
+- name: Install core packages
+  hosts: localhost
+  become: true
+
+  roles:
+    - common_packages

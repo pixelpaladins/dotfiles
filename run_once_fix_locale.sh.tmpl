@@ -1,27 +1,30 @@
 #!/bin/sh
-# ~/.local/share/chezmoi/scripts/run_once_fix_locale.sh.tmpl
-
 set -e
 
-# Only bother if this is Linux and LANG is unset or set to "C"
-if [ "{{ .chezmoi.os }}" != "linux" ]; then
+# Skip non-Linux
+[ "{{ .chezmoi.os }}" = "linux" ] || exit 0
+
+current_locale=$(locale | grep '^LANG=' | cut -d= -f2)
+
+if printf %s "$current_locale" | grep -q UTF-8; then
+  echo "[fix-locale] UTF-8 already set: $current_locale"
   exit 0
 fi
 
-current_locale=$(locale | grep LANG= | cut -d= -f2)
-if [ "$current_locale" = "C" ] || [ -z "$current_locale" ]; then
-  echo "[fix-locale] Detected non-UTF8 locale: $current_locale"
+echo "[fix-locale] Detected non-UTF8 locale: $current_locale"
 
-  if [ -f /etc/lsb-release ] || grep -qi ubuntu /etc/os-release 2>/dev/null; then
-    echo "[fix-locale] Applying locale fix for Ubuntu"
+distro_id=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
+
+case "$distro_id" in
+  ubuntu|debian)
+    echo "[fix-locale] Installing/Generating en_US.UTF-8 for $distro_id"
     sudo locale-gen en_US.UTF-8
-    echo 'LANG=en_US.UTF-8\nLC_ALL=en_US.UTF-8' | sudo tee /etc/default/locale
-    sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-  elif [ -f /etc/arch-release ]; then
-    echo "[fix-locale] Arch system -- should be fine, skipping."
-  else
-    echo "[fix-locale] Unknown Linux distro. Skipping locale fix."
-  fi
-else
-  echo "[fix-locale] UTF-8 locale already set: $current_locale"
-fi
+    echo 'LANG=en_US.UTF-8' | sudo tee /etc/default/locale
+    ;;
+  arch)
+    echo "[fix-locale] Arch already UTF-8 capable, skipping."
+    ;;
+  *)
+    echo "[fix-locale] Unknown distro ($distro_id), skipping fix."
+    ;;
+esac

@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# chezmoi:template
+# chezmoi:chmod=755
+set -Eeuo pipefail
+
+log() { printf '[chezmoi] %s\n' "$*"; }
+
+##############################################################################
+# 0. Locate playbook directory
+##############################################################################
+# Render-time constant: where the *source* repo lives on this host.
+SOURCE_ROOT="{{ .chezmoi.sourceDir }}"
+
+if [[ -d "$HOME/.init-playbooks" ]]; then
+  PLAYBOOK_DIR="$HOME/.init-playbooks"             # normal cloned workflow
+else
+  PLAYBOOK_DIR="$SOURCE_ROOT/.init-playbooks"      # container/bind-mount test
+fi
+
+PLAYBOOK_FILE="${PLAYBOOK_DIR}/bootstrap.yml"
+ANSIBLE_CFG="${PLAYBOOK_DIR}/ansible.cfg"
+
+##############################################################################
+# 1. Sanity checks
+##############################################################################
+log "Checking prerequisites …"
+
+command -v ansible-playbook &>/dev/null || {
+  log "Ansible is not installed. Aborting."; exit 1; }
+
+[[ -f $PLAYBOOK_FILE ]] || {
+  log "Playbook file not found at $PLAYBOOK_FILE"; exit 1; }
+
+##############################################################################
+# 2. Pre-warm sudo (optional)
+##############################################################################
+log "Pre-warming sudo …"
+sudo -v
+sudo true
+
+##############################################################################
+# 3. Run the playbook
+##############################################################################
+log "Running Ansible playbook …"
+
+export ANSIBLE_CONFIG="$ANSIBLE_CFG"
+pushd "$PLAYBOOK_DIR" >/dev/null
+ansible-playbook "$PLAYBOOK_FILE" --diff
+popd >/dev/null
+
+log "Playbook completed successfully."

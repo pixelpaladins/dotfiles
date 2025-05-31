@@ -56,11 +56,24 @@
     path = "gron"
     executable = true
     refreshPeriod = "168h"
+
+[".local/bin/kubectl"]
+    type = "file"
+    url = "https://dl.k8s.io/release/v{{ template "get-github-latest-version" list "kubernetes/kubernetes" }}/bin/linux/{{ .chezmoi.arch }}/kubectl"
+    executable = true
+    refreshPeriod = "168h"
     
 [".local/bin/kubectl-neat"]
     type = "archive-file"
     url = "https://github.com/itaysk/kubectl-neat/releases/download/v{{ template "get-github-latest-version" list "itaysk/kubectl-neat" }}/kubectl-neat_linux_{{ .chezmoi.arch }}.tar.gz"
     path = "kubectl-neat"
+    executable = true
+    refreshPeriod = "168h"
+
+[".local/bin/terraform"]
+    type = "archive-file"
+    url = "https://releases.hashicorp.com/terraform/{{ template "get-github-latest-version" list "hashicorp/terraform" }}/terraform_{{ template "get-github-latest-version" list "hashicorp/terraform" }}_linux_{{ .chezmoi.arch }}.zip"
+    path = "terraform"
     executable = true
     refreshPeriod = "168h"
 

@@ -1,0 +1,24 @@
+# roles/common_packages/tasks/main.yml
+- name: Initialise pkg_list
+  set_fact:
+    pkg_list: []
+
+- name: Assemble package list
+  set_fact:
+    pkg_list: >-
+      {{
+        pkg_list +
+        [
+          item.get(ansible_facts.os_family)
+          or item.get(ansible_facts.distribution)
+          or item.name
+        ]
+      }}
+  loop: "{{ development_tools | default([], true) }}"
+  when: item is mapping
+
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ pkg_list | unique }}"
+    state: present
+  when: pkg_list | length > 0          # skip task if nothing to install

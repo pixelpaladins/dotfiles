@@ -1,0 +1,42 @@
+{{ if true }}
+# playbooks/group_vars/development_tools.yml.tmpl
+# Rendered by chezmoi → development_tools.yml
+# Consumed by the "common_packages" role
+development_tools:
+  # --- compiler / build meta-pkg ------------------------------------------
+  - name: build-essential                 # Debian/Ubuntu meta-package
+    RedHat: "@Development Tools"          # dnf group on Fedora/RHEL
+
+  # --- container stack ----------------------------------------------------
+  - name: docker
+    Debian: docker.io                     # "docker.io" on Debian/Ubuntu
+
+  - name: docker-compose                  # identical everywhere
+
+  # --- SCM & CLI ----------------------------------------------------------
+  - name: git
+  - name: gh
+  - name: curl
+  - name: unzip
+  - name: gnupg
+  - name: lsb-release
+    RedHat: redhat-lsb-core               # package that ships lsb_release
+  - name: zsh
+  - name: fzf
+  - name: tmux
+
+  # --- networking ---------------------------------------------------------
+  - name: netcat
+    Debian: netcat-openbsd
+    RedHat: nmap-ncat
+
+  # --- virtualization helpers --------------------------------------------
+  - name: libvirt-clients
+    RedHat: libvirt-client
+
+  # --- locale support -----------------------------------------------------
+  - name: locales                     # Generic
+    Debian: locales                   # Debian/Ubuntu
+    Archlinux: glibc                  # locale-gen is in glibc on Arch
+    RedHat: glibc-langpack-en         # RHEL 9+,
+{{ end }}
