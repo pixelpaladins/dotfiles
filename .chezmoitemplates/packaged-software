@@ -36,7 +36,7 @@ development_tools:
 
   # --- locale support -----------------------------------------------------
   - name: locales                     # Generic
-    Debian: locales-all               # Debian/Ubuntu
+    Debian: locales                   # Debian/Ubuntu
     Archlinux: glibc                  # locale-gen is in glibc on Arch
     RedHat: glibc-langpack-en         # RHEL 9+,
 {{ end }}
