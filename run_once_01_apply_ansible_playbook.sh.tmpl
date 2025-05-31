@@ -45,7 +45,7 @@ log "Running Ansible playbook …"
 
 export ANSIBLE_CONFIG="$ANSIBLE_CFG"
 pushd "$PLAYBOOK_DIR" >/dev/null
-ansible-playbook "$PLAYBOOK_FILE" --diff
+ansible-playbook "$PLAYBOOK_FILE" --diff --become --become-user=root --become-method=sudo -v
 popd >/dev/null
 
 log "Playbook completed successfully."
