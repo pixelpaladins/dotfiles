@@ -4,7 +4,7 @@
 
 [".local/opt/nvim"]
     type            = "archive"
-    url             = "https://github.com/neovim/neovim/releases/download/v{{ template \"get-github-latest-version\" list \"neovim/neovim\" }}/nvim-linux-{{ $arch }}.tar.gz"
+    url             = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-linux-{{ $nvimArch }}.tar.gz"
     stripComponents = 1
     refreshPeriod   = "168h"
 
