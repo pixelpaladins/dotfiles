@@ -32,11 +32,10 @@ command -v ansible-playbook &>/dev/null || {
   log "Playbook file not found at $PLAYBOOK_FILE"; exit 1; }
 
 ##############################################################################
-# 2. Pre-warm sudo (optional)
+# 2. Pre-warm sudo (optional, non-interactive)
 ##############################################################################
 log "Pre-warming sudo …"
-sudo -v
-sudo true
+sudo -n true || true
 
 ##############################################################################
 # 3. Run the playbook
@@ -45,7 +44,12 @@ log "Running Ansible playbook …"
 
 export ANSIBLE_CONFIG="$ANSIBLE_CFG"
 pushd "$PLAYBOOK_DIR" >/dev/null
-ansible-playbook "$PLAYBOOK_FILE" --diff --become --become-user=root --become-method=sudo -v
+ansible-playbook "$PLAYBOOK_FILE" \
+  --diff \
+  --become \
+  --become-user=root \
+  --become-method=sudo \
+  -v
 popd >/dev/null
 
 log "Playbook completed successfully."
