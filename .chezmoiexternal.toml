@@ -4,7 +4,7 @@
 
 [".local/bin/nvim"]
     type          = "file"
-    url           = "https://github.com/neovim/neovim/releases/download/v{{ template \"get-github-latest-version\" list \"neovim/neovim\" }}/nvim-linux-{{ $nvimArch}}.appimage"
+    url           = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-linux-{{ $nvimArch}}.appimage"
     executable    = true
     refreshPeriod = "168h"
 
