@@ -2,11 +2,11 @@
 {{ if eq $nvimArch "arm64" }}{{ $nvimArch = "arm64" }}{{ end }}
 {{ if eq $nvimArch "amd64" }}{{ $nvimArch = "x86_64" }}{{ end }}
 
-[".local/bin/nvim"]
-    type          = "file"
-    url           = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-linux-{{ $nvimArch}}.appimage"
-    executable    = true
-    refreshPeriod = "168h"
+[".local/opt/nvim"]
+    type            = "archive"
+    url             = "https://github.com/neovim/neovim/releases/download/v{{ template \"get-github-latest-version\" list \"neovim/neovim\" }}/nvim-linux-{{ $arch }}.tar.gz"
+    stripComponents = 1
+    refreshPeriod   = "168h"
 
 {{ $jnvArch := .chezmoi.arch }}
 {{ if eq $jnvArch "arm64" }}{{ $jnvArch = "aarch64" }}{{ end }}
