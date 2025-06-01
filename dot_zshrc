@@ -1,3 +1,6 @@
+# Source necessary bins
+export PATH="$PATH:/home/red/.local/bin"
+
 # Load the splash screen
 source "$HOME/.dotfiles/init/00_splash.zsh"
 
@@ -165,7 +168,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export PATH=$PATH:/usr/local/bin
-export PATH=$PATH:/home/pkmn-trainer/.local/share/gem/ruby/3.0.0/bin
+export PATH=$PATH:/home/red/.local/share/gem/ruby/3.0.0/bin
 export EDITOR=nvim
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
