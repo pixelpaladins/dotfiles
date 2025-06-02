@@ -2,7 +2,7 @@
 
 # Check current streams on Plex
 function plex_streams() {
-  local opi='mbvi72of2jyoxcg6pll662dpwe'
+  local opi='xqz3rnyhd5am2xtjc7eyxsl2mu'
   local rootUrl=$(op item get $opi --format json | jq -r '.urls[0].href')
   local apiKey=$(creds $opi 'apiKey')
   local plexStreams=$(curl -L -s '${rootUrl}/api/v2?apikey='${apiKey}'&cmd=get_activity' | jq -r '.response.data.stream_count')
