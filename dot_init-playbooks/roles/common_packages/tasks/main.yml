@@ -8,14 +8,10 @@
     pkg_list: >-
       {{
         pkg_list +
-        [
-          item.get(ansible_facts.os_family)
-          or item.get(ansible_facts.distribution)
-          or item.name
-        ]
+        [ item.get(ansible_facts.os_family) or item.get(ansible_facts.distribution) ]
       }}
   loop: "{{ development_tools | default([], true) }}"
-  when: item is mapping
+  when: item is mapping and (item.get(ansible_facts.os_family) is defined or item.get(ansible_facts.distribution) is defined)
 
 - name: Install packages
   ansible.builtin.package:
