@@ -10,6 +10,7 @@ development_tools:
   # --- container stack ----------------------------------------------------
   - name: docker
     Debian: docker.io                     # "docker.io" on Debian/Ubuntu
+    Archlinux: base-devel                 # Arch meta-package
 
   - name: docker-compose                  # identical everywhere
 
