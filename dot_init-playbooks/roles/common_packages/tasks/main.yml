@@ -1,20 +1,26 @@
 # roles/common_packages/tasks/main.yml
-- name: Initialise pkg_list
+- name: Initialise list
   set_fact:
     pkg_list: []
 
-- name: Assemble package list
-  set_fact:
-    pkg_list: >-
+- name: Build list for {{ ansible_facts.distribution }}
+  vars:
+    candidate: >-
       {{
-        pkg_list +
-        [ item.get(ansible_facts.os_family) or item.get(ansible_facts.distribution) ]
+        item.get(ansible_facts.distribution)
+          | default(item.get(ansible_facts.os_family))
+          | default(item.name)
       }}
-  loop: "{{ development_tools | default([], true) }}"
-  when: item is mapping and (item.get(ansible_facts.os_family) is defined or item.get(ansible_facts.distribution) is defined)
+  set_fact:
+    pkg_list: "{{ pkg_list + [candidate] }}"
+  loop: "{{ development_tools }}"
+  when:
+    - item is mapping
+    - candidate is not none
+    - candidate | length > 0        # ignore empty strings
 
-- name: Install packages
+- name: Install development tools
   ansible.builtin.package:
     name: "{{ pkg_list | unique }}"
     state: present
-  when: pkg_list | length > 0          # skip task if nothing to install
+  when: pkg_list | length > 0
