@@ -41,6 +41,22 @@
     executable = true
     refreshPeriod = "168h"
 
+# ghq
+{{ $ghqOS := .chezmoi.os }}
+{{ if eq $ghqOS "darwin" }}{{ $ghqOS = "darwin" }}{{ end }}
+{{ if eq $ghqOS "linux" }}{{ $ghqOS = "linux" }}{{ end }}
+
+{{ $ghqArch := .chezmoi.arch }}
+{{ if eq $ghqArch "amd64" }}{{ $ghqArch = "amd64" }}{{ end }}
+{{ if eq $ghqArch "arm64" }}{{ $ghqArch = "arm64" }}{{ end }}
+
+[".local/bin/ghq"]
+    type = "archive-file"
+    url = "https://github.com/x-motemen/ghq/releases/download/v{{ template "get-github-latest-version" list "x-motemen/ghq" }}/ghq_{{ $ghqOS }}_{{ $ghqArch }}.zip"
+    path = "ghq"
+    executable = true
+    refreshPeriod = "168h"
+
 [".local/bin/jq"]
     type = "file"
     url = "https://github.com/jqlang/jq/releases/download/{{ template "get-github-latest-version" list "jqlang/jq" }}/jq-linux-{{ .chezmoi.arch }}"
