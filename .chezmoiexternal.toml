@@ -67,7 +67,7 @@
 [".local/bin/krew"]
     type = "archive-file"
     url = "https://github.com/kubernetes-sigs/krew/releases/download/v{{ template "get-github-latest-version" list "kubernetes-sigs/krew" }}/krew-{{ $krewOS }}_{{ $krewArch }}.tar.gz"
-    path = "./krew-linux_amd64"
+    path = "./krew-{{ $krewOS }}_{{ $krewArch }}"
     executable = true
     refreshPeriod = "168h"
 
@@ -100,13 +100,6 @@
 [".local/bin/kubectl"]
     type = "file"
     url = "https://dl.k8s.io/release/v{{ template "get-github-latest-version" list "kubernetes/kubernetes" }}/bin/linux/{{ .chezmoi.arch }}/kubectl"
-    executable = true
-    refreshPeriod = "168h"
-
-[".local/bin/kubectl-neat"]
-    type = "archive-file"
-    url = "https://github.com/itaysk/kubectl-neat/releases/download/v{{ template "get-github-latest-version" list "itaysk/kubectl-neat" }}/kubectl-neat_linux_{{ .chezmoi.arch }}.tar.gz"
-    path = "kubectl-neat"
     executable = true
     refreshPeriod = "168h"
 
