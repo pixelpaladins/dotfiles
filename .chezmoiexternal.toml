@@ -66,8 +66,8 @@
 
 [".local/bin/krew"]
     type = "archive-file"
-    url = "https://github.com/kubernetes-sigs/krew/releases/download/v0.4.5/krew-{{ $krewOS }}_{{ $krewArch }}.tar.gz"
-    path = "krew-linux_{{ $krewArch }}"
+    url = "https://github.com/kubernetes-sigs/krew/releases/download/v{{ template "get-github-latest-version" list "kubernetes-sigs/krew" }}/krew-{{ $krewOS }}_{{ $krewArch }}.tar.gz"
+    path = "krew-linux_amd64"
     executable = true
     refreshPeriod = "168h"
 
