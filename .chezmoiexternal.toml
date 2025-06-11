@@ -64,7 +64,7 @@
 {{ if eq $krewArch "arm64" }}{{ $krewArch = "arm64" }}{{ end }}
 {{ if and (eq $krewOS "linux") (eq $krewArch "arm") }}{{ $krewArch = "arm" }}{{ end }} # For krew-linux_arm.tar.gz (they have this odd one)
 
-[".local/bin/krew"]
+[".local/bin/kubectl-krew"]
     type = "archive-file"
     url = "https://github.com/kubernetes-sigs/krew/releases/download/v{{ template "get-github-latest-version" list "kubernetes-sigs/krew" }}/krew-{{ $krewOS }}_{{ $krewArch }}.tar.gz"
     path = "./krew-{{ $krewOS }}_{{ $krewArch }}"
