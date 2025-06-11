@@ -57,6 +57,20 @@
     executable = true
     refreshPeriod = "168h"
 
+# krew
+{{ $krewOS := .chezmoi.os }}
+{{ $krewArch := .chezmoi.arch }}
+{{ if eq $krewArch "amd64" }}{{ $krewArch = "amd64" }}{{ end }}
+{{ if eq $krewArch "arm64" }}{{ $krewArch = "arm64" }}{{ end }}
+{{ if and (eq $krewOS "linux") (eq $krewArch "arm") }}{{ $krewArch = "arm" }}{{ end }} # For krew-linux_arm.tar.gz (they have this odd one)
+
+[".local/bin/krew"]
+    type = "archive-file"
+    url = "https://github.com/kubernetes-sigs/krew/releases/download/v0.4.5/krew-{{ $krewOS }}_{{ $krewArch }}.tar.gz"
+    path = "krew-{{ $krewOS }}_{{ $krewArch }}/krew"
+    executable = true
+    refreshPeriod = "168h"
+
 [".local/bin/jq"]
     type = "file"
     url = "https://github.com/jqlang/jq/releases/download/{{ template "get-github-latest-version" list "jqlang/jq" }}/jq-linux-{{ .chezmoi.arch }}"
@@ -75,7 +89,7 @@
     path = "linux-{{ .chezmoi.arch }}/helm"
     executable = true
     refreshPeriod = "168h"
-    
+
 [".local/bin/gron"]
     type = "archive-file"
     url = "https://github.com/tomnomnom/gron/releases/download/v{{ template "get-github-latest-version" list "tomnomnom/gron" }}/gron-linux-{{ .chezmoi.arch }}-{{ template "get-github-latest-version" list "tomnomnom/gron" }}.tgz"
@@ -88,7 +102,7 @@
     url = "https://dl.k8s.io/release/v{{ template "get-github-latest-version" list "kubernetes/kubernetes" }}/bin/linux/{{ .chezmoi.arch }}/kubectl"
     executable = true
     refreshPeriod = "168h"
-    
+
 [".local/bin/kubectl-neat"]
     type = "archive-file"
     url = "https://github.com/itaysk/kubectl-neat/releases/download/v{{ template "get-github-latest-version" list "itaysk/kubectl-neat" }}/kubectl-neat_linux_{{ .chezmoi.arch }}.tar.gz"
