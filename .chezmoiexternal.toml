@@ -53,9 +53,8 @@
 [".local/bin/ghq"]
     type = "archive-file"
     url = "https://github.com/x-motemen/ghq/releases/download/v{{ template "get-github-latest-version" list "x-motemen/ghq" }}/ghq_{{ $ghqOS }}_{{ $ghqArch }}.zip"
-    path = "ghq"
+    path = "ghq_{{ $ghqOS }}_{{ $ghqArch }}/ghq"
     executable = true
-    stripComponents = 0
     refreshPeriod = "168h"
 
 [".local/bin/jq"]
