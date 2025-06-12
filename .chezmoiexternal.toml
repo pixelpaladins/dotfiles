@@ -80,7 +80,7 @@
 
 # fzf
 [".local/bin/fzf"]
-    type = "file-archive"
+    type = "archive-file"
     url = "https://github.com/junegunn/fzf/releases/download/v{{ template "get-github-latest-version" list "junegunn/fzf" }}/fzf-{{ template "get-github-latest-version" list "junegunn/fzf" }}-{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
     executable = true
     path = "fzf"
