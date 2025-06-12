@@ -1,4 +1,5 @@
 # Initialize completion system
+fpath=(~/.local/completions $fpath)
 autoload -Uz compinit
 compinit
 
