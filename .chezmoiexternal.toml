@@ -57,6 +57,13 @@
     executable = true
     refreshPeriod = "168h"
 
+[".local/completions/_ghq"]
+    type = "archive-file"
+    url = "https://github.com/x-motemen/ghq/releases/download/v{{ template "get-github-latest-version" list "x-motemen/ghq" }}/ghq_{{ $ghqOS }}_{{ $ghqArch }}.zip"
+    path = "ghq_{{ $ghqOS }}_{{ $ghqArch }}/misc/zsh/_ghq"
+    executable = true
+    refreshPeriod = "168h"
+
 # krew
 {{ $krewOS := .chezmoi.os }}
 {{ $krewArch := .chezmoi.arch }}
