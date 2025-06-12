@@ -78,6 +78,13 @@
     executable = true
     refreshPeriod = "168h"
 
+# fzf
+[".local/bin/fzf"]
+    type = "file"
+    url = "https://github.com/junegunn/fzf/releases/download/v{{ template "get-github-latest-version" list "junegunn/fzf" }}/fzf-{{ template "get-github-latest-version" list "junegunn/fzf" }}-{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
+    executable = true
+    refreshPeriod = "168h"
+
 [".local/bin/jq"]
     type = "file"
     url = "https://github.com/jqlang/jq/releases/download/{{ template "get-github-latest-version" list "jqlang/jq" }}/jq-linux-{{ .chezmoi.arch }}"

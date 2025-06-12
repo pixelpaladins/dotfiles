@@ -23,7 +23,6 @@ development_tools:
   - name: lsb-release
     RedHat: redhat-lsb-core               # package that ships lsb_release
   - name: zsh
-  - name: fzf
   - name: tmux
 
   # --- networking ---------------------------------------------------------
