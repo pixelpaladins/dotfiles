@@ -6,8 +6,10 @@ compinit
 for tool in kubectl gh chezmoi argocd helm
 do
   if [[ -x $(command -v $tool) ]]; then
-    if $tool completion zsh &>/dev/null; then
-      source <($tool completion zsh)
+    completion_output="$($tool completion zsh 2>/dev/null || true)"
+    # Only source if it looks like a Zsh completion (has #compdef)
+    if grep -q '^#compdef' <<< "$completion_output"; then
+      source <(echo "$completion_output")
     fi
   fi
 done
