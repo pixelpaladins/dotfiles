@@ -30,12 +30,6 @@ for file in $HOME/.dotfiles/exports/*.zsh; do
 done
 
 # ------------------------------------------------------------
-# Source all completion files
-for file in $HOME/.dotfiles/autocompletion/*.zsh; do
-    [ -r "$file" ] && source "$file"
-done
-
-# ------------------------------------------------------------
 # Source all other function files, except creds.zsh
 for file in $HOME/.dotfiles/functions/*.zsh; do
     [[ "$file" != *"creds.zsh" ]] && [ -r "$file" ] && source "$file"
@@ -190,3 +184,8 @@ opFind() {
 
 eval "$(zoxide init zsh)"
 eval "$(gh copilot alias -- zsh)"
+# ------------------------------------------------------------
+# Source all completion files
+for file in $HOME/.dotfiles/autocompletion/*.zsh; do
+    [ -r "$file" ] && source "$file"
+done
