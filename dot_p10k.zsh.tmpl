@@ -187,7 +187,11 @@
   typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=232
   typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=7
   # Custom icon.
+  {{ if eq .chezmoi.hostname "mt-silver" }}
+  typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION=$'\U000F041D'
+  {{ else }}
   # typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='⭐'
+  {{ end }}
 
   ################################[ prompt_char: prompt symbol ]################################
   # Transparent background.
