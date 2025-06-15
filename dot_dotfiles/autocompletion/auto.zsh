@@ -4,7 +4,7 @@ autoload -Uz compinit
 compinit
 
 # Load completions dynamically for tools with native Zsh completion
-for tool in kubectl gh chezmoi argocd helm
+for tool in kubectl gh chezmoi argocd helm op
 do
   if [[ -x $(command -v $tool) ]]; then
     completion_output="$($tool completion zsh 2>/dev/null || true)"
