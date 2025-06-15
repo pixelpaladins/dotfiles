@@ -1,0 +1,5 @@
+{{- /*
+     First data row whose 5th column is non-empty is the newest LTS.
+*/ -}}
+{{- $cmd := "curl -s -o - https://nodejs.org/dist/index.tab | awk 'NR>1 && $5!=\"\" {print $1; exit}'" -}}
+{{- (output "sh" "-c" $cmd) | trim -}}
