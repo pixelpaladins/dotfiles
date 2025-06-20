@@ -11,6 +11,15 @@
 {{/* OS mappings */}}
 {{ $osNative := .chezmoi.os }}
 
+{{/* Neovim specific mappings */}}
+{{ $osName := .chezmoi.os }}
+{{ if eq $osName "darwin" }}{{ $osName = "macos" }}{{ end }}
+{{ $archNeovim := .chezmoi.arch }}
+{{ if eq $osName "linux" }}
+    {{ if eq $archNeovim "arm64" }}{{ $archNeovim = "aarch64" }}{{ end }}
+    {{ if eq $archNeovim "amd64" }}{{ $archNeovim = "x86_64" }}{{ end }}
+{{ end }}
+
 [".local/opt/nvim"]
     type            = "archive"
     url             = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-linux-{{ $archNative }}.tar.gz"
