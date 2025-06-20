@@ -194,11 +194,9 @@
     executable    = true
     refreshPeriod = "168h"
 
-{{ $opVersion := template "get-1password-latest-version" . }}
-
 [".local/bin/op"]
     type = "archive-file"
-    url = "https://cache.agilebits.com/dist/1P/op2/pkg/v{{ $opVersion }}/op_linux_{{ .chezmoi.arch }}_v{{ $opVersion }}.zip"
+    url = "https://cache.agilebits.com/dist/1P/op2/pkg/v{{ template "get-1password-latest-version" . }}/op_linux_{{ .chezmoi.arch }}_v{{ template "get-1password-latest-version" . }}.zip"
     path = "op"
     executable = true
     refreshPeriod = "168h"
