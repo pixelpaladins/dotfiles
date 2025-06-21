@@ -60,7 +60,7 @@ install_ansible() {
     sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
     sudo DEBIAN_FRONTEND=noninteractive apt-get install software-properties-common python3 python3-pip -y -qq > /dev/null
     sudo DEBIAN_FRONTEND=noninteractive add-apt-repository -y -update ppa:ansible/ansible > /dev/null
-    sudo DEBIAN_FRONTEND=noninteractive apt install -y ansible -qq > /dev/null || true
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ansible -qq > /dev/null || true
     check_ansible_version
 
     {{ else if eq .osid "linux-fedora" }}
