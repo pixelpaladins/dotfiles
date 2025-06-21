@@ -15,16 +15,14 @@
 {{ $osName := .chezmoi.os }}
 {{ if eq $osName "darwin" }}{{ $osName = "macos" }}{{ end }}
 {{ $archNeovim := .chezmoi.arch }}
-{{ if eq $osName "linux" }}
-    {{ if eq $archNeovim "arm64" }}{{ $archNeovim = "aarch64" }}{{ end }}
-    {{ if eq $archNeovim "amd64" }}{{ $archNeovim = "x86_64" }}{{ end }}
-{{ end }}
+{{ if eq $archNeovim "amd64" }}{{ $archNeovim = "x86_64" }}{{ end }}
 
 [".local/opt/nvim"]
     type            = "archive"
-    url             = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-linux-{{ $archNeovim }}.tar.gz"
+    url             = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-{{ $osName }}-{{ $archNeovim }}.tar.gz"
     stripComponents = 1
     refreshPeriod   = "168h"
+
 
 [".local/bin/jnv"]
     type = "archive-file"
