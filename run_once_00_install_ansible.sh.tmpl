@@ -42,7 +42,6 @@ install_ansible() {
     check_ansible_version
 
     {{ else if eq .osid "linux-debian" }}
-    sudo DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq needrestart > /dev/null
     echo "[chezmoi] Installing Ansible on Debian-based systems..."
     # Pass DEBIAN_FRONTEND=noninteractive with each sudo apt-get command
     sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
