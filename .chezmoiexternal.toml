@@ -189,3 +189,10 @@
     path = "op"
     executable = true
     refreshPeriod = "168h"
+
+[".local/bin/gh"]
+    type = "archive-file"
+    url = "https://github.com/cli/cli/releases/download/v{{ template "get-github-latest-version" list "cli/cli" }}/gh_{{ template "get-github-latest-version" list "cli/cli" }}_{{ if eq .chezmoi.os "darwin" }}macOS_{{ else }}linux_{{ end }}{{ $archNative }}{{ if eq .chezmoi.os "darwin" }}.zip{{ else }}.tar.gz{{ end }}"
+    path = "gh_{{ template "get-github-latest-version" list "cli/cli" }}_{{ if eq .chezmoi.os "darwin" }}macOS_{{ else }}linux_{{ end }}{{ $archNative }}/bin/gh"
+    executable = true
+    refreshPeriod = "168h"

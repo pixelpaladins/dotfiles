@@ -16,7 +16,6 @@ development_tools:
 
   # --- SCM & CLI ----------------------------------------------------------
   - name: git
-  - name: gh
   - name: curl
   - name: unzip
   - name: gnupg
