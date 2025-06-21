@@ -32,6 +32,7 @@ development_tools:
   # --- virtualization helpers --------------------------------------------
   - name: libvirt-clients
     RedHat: libvirt-client
+    Archlinux: libvirt
 
   # --- locale support -----------------------------------------------------
   - name: locales                     # Generic
