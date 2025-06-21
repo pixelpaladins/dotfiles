@@ -48,7 +48,7 @@ FLAVOR_LINE="${LUGIA_FLAVOR_LINES[RANDOM % ${#LUGIA_FLAVOR_LINES[@]}]}"
 TRAINER_INFO=(
   "=== TRAINER ==="
   " ↳ Name:        $(whoami)"
-  " ↳ Location:    $(hostname -f)"
+  " ↳ Location:    $(hostname -f 2>/dev/null || cat /etc/hostname)"
   " ↳ Weather:     $(curl -s 'wttr.in/aus+tx?format=%C%20%t')"
   " ↳ Playtime:    $(uptime -p | sed 's/^up //')"
   " ↳ White-out:   $(awk '{print int($1/86400)}' /proc/uptime)d since party fainted"
