@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+# Skip non-Linux
+[ "{{ .chezmoi.os }}" = "linux" ] || exit 0
+
+current_locale=$(locale | grep '^LANG=' | cut -d= -f2)
+
+if printf %s "$current_locale" | grep -q UTF-8; then
+  echo "[fix-locale] UTF-8 already set: $current_locale"
+  exit 0
+fi
+
+echo "[fix-locale] Detected non-UTF8 locale: $current_locale"
+
+distro_id=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
+
+case "$distro_id" in
+  ubuntu|debian)
+    echo "[fix-locale] Installing/Generating en_US.UTF-8 for $distro_id"
+    sudo locale-gen en_US.UTF-8
+    echo -e 'LANG=en_US.UTF-8\nLC_ALL=en_US.UTF-8' | sudo tee /etc/default/locale
+    ;;
+  arch)
+    echo "[fix-locale] Arch already UTF-8 capable, skipping."
+    ;;
+  *)
+    echo "[fix-locale] Unknown distro ($distro_id), skipping fix."
+    ;;
+esac
