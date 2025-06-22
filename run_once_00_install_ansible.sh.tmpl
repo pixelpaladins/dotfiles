@@ -103,7 +103,7 @@ install_ansible() {
         echo "[chezmoi] python3-pip already installed."
     fi
     if ! python3 -m pip show ansible &>/dev/null; then
-        python3 -m pip install --user ansible
+        python3 -m pip install --user ansible --break-system-packages
     else
         echo "[chezmoi] ansible already installed via pip."
     fi
