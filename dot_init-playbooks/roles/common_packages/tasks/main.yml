@@ -1,4 +1,8 @@
 # roles/common_packages/tasks/main.yml
+- name: Gather installed package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
 - name: Initialise list
   set_fact:
     pkg_list: []
@@ -15,8 +19,36 @@
     - candidate is not none
     - candidate | length > 0        # ignore empty strings
 
-- name: Install development tools
-  ansible.builtin.package:
-    name: "{{ pkg_list | unique }}"
-    state: present
+- name: Check and install missing development tools
+  block:
+    - name: Check if package is installed
+      ansible.builtin.set_fact:
+        pkg_installed: "{{ (ansible_facts.packages[item] is defined) }}"
+      loop: "{{ pkg_list | unique }}"
+      loop_control:
+        loop_var: item
+
+    - name: Echo if package is missing
+      ansible.builtin.debug:
+        msg: "[chezmoi] Package '{{ item }}' is missing. Installing..."
+      when: not (ansible_facts.packages[item] is defined)
+      loop: "{{ pkg_list | unique }}"
+      loop_control:
+        loop_var: item
+
+    - name: Install missing packages
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      when: not (ansible_facts.packages[item] is defined)
+      loop: "{{ pkg_list | unique }}"
+      loop_control:
+        loop_var: item
+
+    - name: Echo when package is installed
+      ansible.builtin.debug:
+        msg: "[chezmoi] Package '{{ item }}' is now installed."
+      loop: "{{ pkg_list | unique }}"
+      loop_control:
+        loop_var: item
   when: pkg_list | length > 0
