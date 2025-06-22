@@ -2,21 +2,11 @@
 
 set -euo pipefail
 
-# Pre-flight check function for Ansible - Exit if Ansible is already installed and latest
-check_ansible_installed_and_latest() {
+# Pre-flight check function for Ansible - Exit if Ansible is already installed
+check_ansible_installed() {
     if command -v ansible &>/dev/null; then
-        INSTALLED_VERSION=$(ansible --version | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-        LATEST_VERSION=$(python3 -m pip index versions ansible 2>/dev/null | grep -oP 'Available versions:.*' | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
-        if [ -z "$LATEST_VERSION" ]; then
-            # Fallback if pip index is not available, use pip show
-            LATEST_VERSION=$(python3 -m pip install ansible==random 2>&1 | grep -oE 'from versions: [^)]*' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
-        fi
-        if [ "$INSTALLED_VERSION" = "$LATEST_VERSION" ]; then
-            echo "[chezmoi] Ansible is already installed and is the latest version ($INSTALLED_VERSION)."
-            exit 0
-        else
-            echo "[chezmoi] Ansible is installed but not the latest version. Upgrading from $INSTALLED_VERSION to $LATEST_VERSION..."
-        fi
+        echo "[chezmoi] Ansible is already installed."
+        exit 0
     fi
 }
 
@@ -32,35 +22,150 @@ check_ansible_version() {
     fi
 }
 
-# Function to install latest Python and pip if not present, then install Ansible via pip --user
-install_ansible_user() {
-    echo "[chezmoi] Ensuring Python3 is installed..."
-    if ! command -v python3 &>/dev/null; then
-        echo "[chezmoi] Python3 not found. Please install Python3 manually and re-run this script."
+# Function to install Ansible based on the OS
+install_ansible() {
+    {{ if eq .osid "darwin" }}
+    echo "[chezmoi] Installing Ansible on macOS..."
+    if ! command -v brew &>/dev/null; then
+        echo "[chezmoi] Homebrew is not installed. Please install Homebrew first and re-run this Chezmoi setup."
         exit 1
     fi
-    PYTHON=python3
-
-    echo "[chezmoi] Ensuring pip is installed..."
-    if ! $PYTHON -m pip --version &>/dev/null; then
-        echo "[chezmoi] pip not found. Installing pip..."
-        curl -sS https://bootstrap.pypa.io/get-pip.py | $PYTHON -
+    brew update
+    if ! brew list python3 &>/dev/null; then
+        echo "[chezmoi] python3 not found. Installing..."
+        brew install python3 || true
+    else
+        echo "[chezmoi] python3 already installed via brew."
     fi
-
-    echo "[chezmoi] Installing Ansible with pip (user install)..."
-    $PYTHON -m pip install --user --upgrade pip --break-system-packages
-    $PYTHON -m pip install --user --upgrade ansible --break-system-packages
-
-    # Ensure $HOME/.local/bin is in PATH for this session
-    export PATH="$HOME/.local/bin:$PATH"
+    if ! python3 -m pip show ansible &>/dev/null; then
+        python3 -m pip install --user ansible
+    else
+        echo "[chezmoi] ansible already installed via pip."
+    fi
     check_ansible_version
+
+    {{ else if eq .osid "linux-arch" }}
+    echo "[chezmoi] Installing Ansible on Arch Linux..."
+    if ! pacman -Qi python &>/dev/null; then
+        echo "[chezmoi] python not found. Installing..."
+        sudo pacman -S --noconfirm --needed python || true
+    else
+        echo "[chezmoi] python already installed via pacman."
+    fi
+    if ! pacman -Qi python-pip &>/dev/null; then
+        echo "[chezmoi] python-pip not found. Installing..."
+        sudo pacman -S --noconfirm --needed python-pip || true
+    else
+        echo "[chezmoi] python-pip already installed via pacman."
+    fi
+    if ! python3 -m pip show ansible &>/dev/null; then
+        python3 -m pip install --user ansible
+    else
+        echo "[chezmoi] ansible already installed via pip."
+    fi
+    check_ansible_version
+
+    {{ else if eq .osid "linux-debian" }}
+    echo "[chezmoi] Installing Ansible on Debian-based systems..."
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
+    if ! dpkg -s wget &>/dev/null; then
+        echo "[chezmoi] wget not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install wget -y -qq > /dev/null
+    else
+        echo "[chezmoi] wget already installed."
+    fi
+    if ! dpkg -s gpg &>/dev/null; then
+        echo "[chezmoi] gpg not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install gpg -y -qq > /dev/null
+    else
+        echo "[chezmoi] gpg already installed."
+    fi
+    DEBIAN_CODENAME=$(. /etc/os-release && echo $VERSION_CODENAME)
+    wget -qO- "https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0x6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367" | sudo gpg --dearmour -o /usr/share/keyrings/ansible-archive-keyring.gpg
+    echo "deb http://deb.debian.org/debian ${DEBIAN_CODENAME}-backports main" | sudo tee /etc/apt/sources.list.d/backports.list > /dev/null
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
+    if ! dpkg -s software-properties-common &>/dev/null; then
+        echo "[chezmoi] software-properties-common not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install software-properties-common -y -qq > /dev/null
+    else
+        echo "[chezmoi] software-properties-common already installed."
+    fi
+    if ! dpkg -s python3 &>/dev/null; then
+        echo "[chezmoi] python3 not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install python3 -y -qq > /dev/null
+    else
+        echo "[chezmoi] python3 already installed."
+    fi
+    if ! dpkg -s python3-pip &>/dev/null; then
+        echo "[chezmoi] python3-pip not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install python3-pip -y -qq > /dev/null
+    else
+        echo "[chezmoi] python3-pip already installed."
+    fi
+    if ! python3 -m pip show ansible &>/dev/null; then
+        python3 -m pip install --user ansible
+    else
+        echo "[chezmoi] ansible already installed via pip."
+    fi
+    check_ansible_version
+
+    {{ else if eq .osid "linux-ubuntu" }}
+    echo "[chezmoi] Installing Ansible on Ubuntu..."
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
+    if ! dpkg -s software-properties-common &>/dev/null; then
+        echo "[chezmoi] software-properties-common not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install software-properties-common -y -qq > /dev/null
+    else
+        echo "[chezmoi] software-properties-common already installed."
+    fi
+    if ! dpkg -s python3 &>/dev/null; then
+        echo "[chezmoi] python3 not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install python3 -y -qq > /dev/null
+    else
+        echo "[chezmoi] python3 already installed."
+    fi
+    if ! dpkg -s python3-pip &>/dev/null; then
+        echo "[chezmoi] python3-pip not found. Installing..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install python3-pip -y -qq > /dev/null
+    else
+        echo "[chezmoi] python3-pip already installed."
+    fi
+    sudo DEBIAN_FRONTEND=noninteractive add-apt-repository -y -update ppa:ansible/ansible > /dev/null
+    if ! python3 -m pip show ansible &>/dev/null; then
+        python3 -m pip install --user ansible
+    else
+        echo "[chezmoi] ansible already installed via pip."
+    fi
+    check_ansible_version
+
+    {{ else if eq .osid "linux-fedora" }}
+    echo "[chezmoi] Installing Ansible on Fedora..."
+    if ! dnf list installed python3 &>/dev/null; then
+        echo "[chezmoi] python3 not found. Installing..."
+        sudo dnf install -y python3 || true
+    else
+        echo "[chezmoi] python3 already installed via dnf."
+    fi
+    if ! dnf list installed python3-pip &>/dev/null; then
+        echo "[chezmoi] python3-pip not found. Installing..."
+        sudo dnf install -y python3-pip || true
+    else
+        echo "[chezmoi] python3-pip already installed via dnf."
+    fi
+    if ! python3 -m pip show ansible &>/dev/null; then
+        python3 -m pip install --user ansible
+    else
+        echo "[chezmoi] ansible already installed via pip."
+    fi
+    check_ansible_version
+    {{ end }}
 }
 
 echo "[chezmoi] Prewarming sudo..."
 sudo true
-echo "[chezmoi] Checking if Ansible is already installed and latest..."
-check_ansible_installed_and_latest
-echo "[chezmoi] Ansible not found or not latest! Proceeding with user installation or upgrade..."
+echo "[chezmoi] Checking if Ansible is already installed..."
+check_ansible_installed
+echo "[chezmoi] Ansible not found! Proceeding with installation..."
 echo "[chezmoi] This may take a while, please be patient..."
-install_ansible_user
+install_ansible
 echo "[chezmoi] Ansible installation completed successfully!"
