@@ -56,7 +56,7 @@ CAMP_PARTY_HP=$(free -m | awk '/^Mem:/ {printf "%d%%", 100-int($3*100/$2)}')
 CAMP_BOX_SPACE=$(df -h /home | awk 'NR==2{print $3 " / " $2}')
 CAMP_MONEY="$(awk '/^( *eth0:| *wlan0:)/ { gsub(":", ""); t += $2 + $10 } END { printf "%.0f\n", t / 1000 }' /proc/net/dev | numfmt --grouping)₽"
 
-COMM_GTS=$(ip=$(curl -s https://ipinfo.io/ip); host $ip 2>/dev/null | awk '/pointer/ {print $5}' | sed 's/\.$//' || echo N/A)
+COMM_GTS=$(curl ifconfig.io/host)
 COMM_LINK_LAN=$(hostname -i | awk '{print $1}')
 COMM_TRAINERS="$(ss -tan | awk 'NR>1{c++} END{print c}') nearby"
 

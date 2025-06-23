@@ -2,10 +2,11 @@
 # ----------------------------------------------------------
 # Combined 1Password session manager, login, helper, and creds functions
 
-# Default vault for Connect mode
+
+{{- if (env "OP_CONNECT_HOST") }}
+
 export OP_CONNECT_VAULT="${OP_CONNECT_VAULT:-homelab}"
 
-{{- if or (env "OP_CONNECT_HOST") (env "OP_SERVICE_ACCOUNT_TOKEN") }}
 # ----------------------------------------------------------
 # CONNECT / service-account mode → no interactive sign-in needed.
 
