@@ -17,7 +17,7 @@ else
   fi
 
   # Use op to fetch the document and write it to the kubeconfig path
-  opDoc '3pmmbxpwty7zvxinnvlsujww44' 'kubeconfig.yaml' "$KUBECONFIG_PATH"
+  op document 'wxnv57hiug2rizkowvdncxhiju' 'kubeconfig.yaml' "$KUBECONFIG_PATH"
 
   # Set proper permissions for the kubeconfig file
   chmod 600 "$KUBECONFIG_PATH"
