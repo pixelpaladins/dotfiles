@@ -194,3 +194,15 @@
     path = "gh_{{ template "get-github-latest-version" list "cli/cli" }}_{{ if eq .chezmoi.os "darwin" }}macOS_{{ else }}linux_{{ end }}{{ $archNative }}/bin/gh"
     executable = true
     refreshPeriod = "168h"
+
+[".local/share/fonts/FiraCodeNerdFont-Regular.ttf"]
+    type = "archive-file"
+    url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
+    path = "FiraCodeNerdFont-Regular.ttf"
+    refreshPeriod = "168h"
+
+[".local/share/fonts/FiraCodeNerdFontMono-Regular.ttf"]
+    type = "archive-file"
+    url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
+    path = "FiraCodeNerdFontMono-Regular.ttf"
+    refreshPeriod = "168h"
