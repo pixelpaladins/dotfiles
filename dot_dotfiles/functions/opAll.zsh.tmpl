@@ -40,44 +40,43 @@ creds() {
 # ----------------------------------------------------------
 # CLASSIC interactive account mode
 
-if [[ -z "$OP_SERVICE_ACCOUNT_TOKEN" ]]; then
-  op_session_manager() {
-    local session_dir="$HOME/.op_sessions"
-    mkdir -p "$session_dir"
-    chmod 700 "$session_dir"
+op_session_manager() {
+  local session_dir="$HOME/.op_sessions"
+  mkdir -p "$session_dir"
+  chmod 700 "$session_dir"
 
-    get_account_alias() { op account list --format json | jq -r '.[0].user_uuid'; }
+  get_account_alias() { op account list --format json | jq -r '.[0].user_uuid'; }
 
-    signin_op() {
-      local account_alias="$1" session_file="$2" session_token
-      if [[ -f $session_file ]]; then
-        session_token=$(<"$session_file")
-        export OP_SESSION_"$account_alias"="$session_token"
-        if op account get >/dev/null 2>&1; then
-          echo "✅ 1Password session for $account_alias is active."
-          return 0
-        else
-          echo "⚠️  Session for $account_alias is invalid. Re-authenticating…"
-          rm -f "$session_file"
-        fi
-      fi
-      echo "🔑 Signing in to 1Password account $account_alias…"
-      session_token=$(op signin --account "$account_alias" --raw) || {
-        echo "❌ 1Password sign-in failed."; return 1; }
-      echo "$session_token" >"$session_file"; chmod 600 "$session_file"
+  signin_op() {
+    local account_alias="$1" session_file="$2" session_token
+    if [[ -f $session_file ]]; then
+      session_token=$(<"$session_file")
       export OP_SESSION_"$account_alias"="$session_token"
-      echo "✅ Signed in to $account_alias successfully."
-    }
-
-    local account_alias; account_alias=$(get_account_alias) || return 1
-    local session_file="$session_dir/session_$account_alias"
-    signin_op "$account_alias" "$session_file"
+      if op account get >/dev/null 2>&1; then
+        echo "✅ 1Password session for $account_alias is active."
+        return 0
+      else
+        echo "⚠️  Session for $account_alias is invalid. Re-authenticating…"
+        rm -f "$session_file"
+      fi
+    fi
+    echo "🔑 Signing in to 1Password account $account_alias…"
+    session_token=$(op signin --account "$account_alias" --raw) || {
+      echo "❌ 1Password sign-in failed."; return 1; }
+    echo "$session_token" >"$session_file"; chmod 600 "$session_file"
+    export OP_SESSION_"$account_alias"="$session_token"
+    echo "✅ Signed in to $account_alias successfully."
   }
+
+  local account_alias; account_alias=$(get_account_alias) || return 1
+  local session_file="$session_dir/session_$account_alias"
+  signin_op "$account_alias" "$session_file"
+}
+
+if [[ -z "$OP_SERVICE_ACCOUNT_TOKEN" ]]; then
+  # Initialize on load
+  op_session_manager
 fi
-
-# Initialize on load
-op_session_manager
-
 opLogin() {
   local acct=$(op account list --format=json | jq -r '.[0].shorthand')
   eval "$(op signin --account \"$acct\")"
