@@ -47,29 +47,62 @@ FLAVOR_LINE="${LUGIA_FLAVOR_LINES[RANDOM % ${#LUGIA_FLAVOR_LINES[@]}]}"
 ############################
 # Gather trainer panel data
 TRAINER_NAME=$(whoami)
-TRAINER_LOCATION=$(hostname -f 2>/dev/null || cat /etc/hostname)
-TRAINER_WEATHER=$(curl -s 'wttr.in/aus+tx?format=%C%20%t')
-TRAINER_PLAYTIME=$(uptime -p | sed 's/^up //' || cat /proc/uptime | awk '{print $1}' | xargs -I{} awk -v var={} 'BEGIN {printf "%d weeks, %d days, %d hours, %d minutes\n", var/604800, (var%604800)/86400, (var%86400)/3600, (var%3600)/60}')
+TRAINER_LOCATION=$(
+  hostname -f 2>/dev/null ||
+  cat /etc/hostname 2>/dev/null ||
+  echo "Unknown"
+)
+TRAINER_WEATHER=$(curl -s 'wttr.in/aus+tx?format=%C%20%t' || echo "Unavailable")
+# Playtime (uptime fallback)
+if command -v uptime >/dev/null 2>&1; then
+  TRAINER_PLAYTIME=$(uptime -p | sed 's/^up //')
+else
+  TRAINER_PLAYTIME=$(awk '{print $1}' /proc/uptime | xargs -I{} awk -v var={} 'BEGIN {printf "%d weeks, %d days, %d hours, %d minutes", var/604800, (var%604800)/86400, (var%86400)/3600, (var%3600)/60}')
+fi
+# Time since last party faint (uptime in days)
 TRAINER_WHITE_OUT="$(awk '{print int($1/86400)}' /proc/uptime)d since party fainted"
-
-CAMP_PARTY_HP=$(free -m | awk '/^Mem:/ {printf "%d%%", 100-int($3*100/$2)}')
-CAMP_BOX_SPACE=$(df -h /home | awk 'NR==2{print $3 " / " $2}')
-CAMP_MONEY="$(awk '/^( *eth0:| *wlan0:)/ { gsub(":", ""); t += $2 + $10 } END { printf "%.0f\n", t / 1000 }' /proc/net/dev | numfmt --grouping)₽"
-
-COMM_GTS=$(curl ifconfig.io/host)
-COMM_LINK_LAN=$(hostname -i | awk '{print $1}')
-COMM_TRAINERS="$(ss -tan | awk 'NR>1{c++} END{print c}') nearby"
-
+# === CAMP GEAR ===
+# RAM usage via `free`, or fallback to /proc/meminfo
+CAMP_PARTY_HP=$(
+  if command -v free >/dev/null 2>&1; then
+    free -m | awk '/^Mem:/ {printf "%d%%", 100-int($3*100/$2)}'
+  elif [ -f /proc/meminfo ]; then
+    awk '
+      BEGIN { total=0; avail=0 }
+      /^MemTotal:/ { total=$2 }
+      /^MemAvailable:/ { avail=$2 }
+      END { if (total > 0) printf "%d%%", 100 - int(avail * 100 / total); else print "N/A" }
+    ' /proc/meminfo
+  else
+    echo "N/A"
+  fi
+)
+CAMP_BOX_SPACE=$(df -h /home 2>/dev/null | awk 'NR==2{print $3 " / " $2}' || echo "Unknown")
+CAMP_MONEY=$(
+  awk '/^( *eth0:| *wlan0:)/ { gsub(":", ""); t += $2 + $10 } END { printf "%.0f", t / 1000 }' /proc/net/dev |
+  numfmt --grouping 2>/dev/null || echo "Unknown"
+)
+CAMP_MONEY+="₽"
+# === COMM LINK ===
+COMM_GTS=$(curl -s ifconfig.io/host || echo "Unknown")
+COMM_LINK_LAN=$(hostname -i | awk '{print $1}' || echo "Unavailable")
+COMM_TRAINERS="$(ss -tan 2>/dev/null | awk 'NR>1{c++} END{print c}') nearby"
+# === POKÉDEX ===
 POKE_SEEN=$(
-  if command -v pacman >/dev/null 2>&1; then pacman -Qq | wc -l
-  elif command -v dpkg >/dev/null 2>&1; then dpkg -l | awk '/^ii/{c++} END{print c}'
-  elif command -v rpm >/dev/null 2>&1; then rpm -qa | wc -l
-  else echo "N/A"
+  if command -v pacman >/dev/null 2>&1; then
+    pacman -Qq | wc -l
+  elif command -v dpkg >/dev/null 2>&1; then
+    dpkg -l | awk '/^ii/{c++} END{print c}'
+  elif command -v rpm >/dev/null 2>&1; then
+    rpm -qa | wc -l
+  else
+    echo "N/A"
   fi | tr -d '\n'
 )
 POKE_CAUGHT=$(ps ax --no-header | wc -l)
 POKE_BADGES=16
 
+# === BUILD THE PANEL ===
 TRAINER_INFO=(
   "=== TRAINER ==="
   " ↳ Name:        $TRAINER_NAME"

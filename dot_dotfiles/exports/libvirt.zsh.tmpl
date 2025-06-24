@@ -1,0 +1,3 @@
+## ~/.dotfiles/exports/libvirt.zsh
+
+export LIBVIRT_DEFAULT_URI=$(creds {{ .opIds.qemu.uuid }} {{ .opIds.qemu.key }})
