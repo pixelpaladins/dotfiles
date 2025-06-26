@@ -2,6 +2,14 @@
 # ----------------------------------------------------------
 # Combined 1Password session manager, login, helper, and creds functions
 
+# Ensure ~/.config/op permissions are 700
+if [ -d "$HOME/.config/op" ]; then
+  perms=$(stat -c "%a" "$HOME/.config/op")
+  if [ "$perms" != "700" ]; then
+    echo "🔒 Fixing permissions on ~/.config/op (was $perms, setting to 700)"
+    chmod 700 "$HOME/.config/op"
+  fi
+fi
 
 {{- if (env "OP_CONNECT_HOST") }}
 
