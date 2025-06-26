@@ -5,9 +5,11 @@
 # Ensure ~/.config/op permissions are 700
 if [ -d "$HOME/.config/op" ]; then
   perms=$(stat -c "%a" "$HOME/.config/op")
-  if [ "$perms" != "700" ]; then
-    echo "🔒 Fixing permissions on ~/.config/op (was $perms, setting to 700)"
+  other_perms=$(stat -c "%a" "$HOME/.config/op/config")
+  if [ "$perms" != "700" ] || [ "$other_perms" != "600" ]; then
+    echo "🔒 Fixing permissions on ~/.config/op (was $perms, setting .config/op to 700 then .config/op/config to 600)"
     chmod 700 "$HOME/.config/op"
+    chmod 600 "$HOME/.config/op/config"
   fi
 fi
 
