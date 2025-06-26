@@ -104,7 +104,7 @@ opDoc() {
 opUrl() {
   local item_uid="$1" index="${2:-0}"
   [[ -z $item_uid ]] && { echo "Usage: opUrl <item-uid> [index]"; return 1; }
-  op item get "$item_uid" --format json \
+  op item get --vault $OP_CONNECT_VAULT "$item_uid" --format json \
     | jq -r ".urls[${index}].href"
 }
 
@@ -112,6 +112,6 @@ creds() {
   if [ -z "$2" ]; then
     echo "Usage: creds <item/uid> <field>"; return 1
   fi
-  op item get "$1" --fields "$2" --reveal
+  op item get --vault $OP_CONNECT_VAULT "$1" --fields "$2" --reveal
 }
 {{- end }}
