@@ -11,10 +11,6 @@ opIds:
   kube:
     uuid: "wxnv57hiug2rizkowvdncxhiju"
     key: "kubeconfig.yaml"
-  # qemu: Retrieve QEMU/libvirt connection URI (used in exports/libvirt.zsh to set LIBVIRT_DEFAULT_URI)
-  # qemu:
-  #   uuid: "oq6ovvomo4wrjgsl4qmdql3bhm"
-  #   key: "url"
   # nas: Retrieve NAS address (used in genericExports.zsh to export NAS_ADDRESS)
   nas:
     uuid: "c7uboigaglivvovhl2m43ubumu"
