@@ -154,8 +154,10 @@ done
 tput cuu $(( ${#LUGIA_ART[@]} - TBOX_START ))
 
 # Draw the boxed rows
+MAX_PANEL_WIDTH=55
 for panel_row in "${TRAINER_INFO_BOX[@]}"; do
-  printf "\033[62G${BOX_COLOR}%s${RESET_COLOR}\n" "$panel_row"
+  # Truncate to MAX_PANEL_WIDTH to avoid overflow into art
+  printf "\033[62G${BOX_COLOR}%-${MAX_PANEL_WIDTH}.${MAX_PANEL_WIDTH}s${RESET_COLOR}\n" "$panel_row"
 done
 
 # Move cursor back down to the end of Lugia art
