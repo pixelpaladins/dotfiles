@@ -131,12 +131,10 @@ TRAINER_INFO=(
 #  Build the boxed trainer panel                                              #
 ###############################################################################
 TBOX_W=57
-TRAINER_INFO_BOX=( "╔$(printf '═%.0s' $(seq 1 $((TBOX_W-2))))╗" )
+TRAINER_INFO_BOX=()
 for line in "${TRAINER_INFO[@]}"; do
-  printf -v row "║ %-*s ║" $((TBOX_W-4)) "$line"
-  TRAINER_INFO_BOX+=( "$row" )
+  TRAINER_INFO_BOX+=("$line")
 done
-TRAINER_INFO_BOX+=( "╚$(printf '═%.0s' $(seq 1 $((TBOX_W-2))))╝" )
 
 TBOX_START=4                                  # Lugia line where panel begins
 
