@@ -39,6 +39,15 @@ LUGIA_FLAVOR_LINES=(
   "A storm brews outside Mt. Silver..."
   "The stars shimmer faintly... ancient powers await."
   "You're now entering Mt. Silver... A mysterious presence fills the air..."
+  "A shadow glides beneath the waves... The guardian stirs..."
+  "Echoes of ancient song drift through the cavern..."
+  "The air crackles with energy... A legendary force awakens..."
+  "A silver silhouette flashes in the stormy sky..."
+  "The ocean's guardian slumbers, awaiting the worthy..."
+  "A distant roar reverberates through the mountain..."
+  "Rain falls harder... Something powerful draws near..."
+  "The silence is broken only by the beating of great wings..."
+  "A mysterious gale sweeps through the chamber..."
 )
 FLAVOR_LINE="${LUGIA_FLAVOR_LINES[RANDOM % ${#LUGIA_FLAVOR_LINES[@]}]}"
 
