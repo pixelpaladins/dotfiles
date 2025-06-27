@@ -23,7 +23,6 @@
     stripComponents = 1
     refreshPeriod   = "168h"
 
-
 [".local/bin/jnv"]
     type = "archive-file"
     url = "https://github.com/ynqa/jnv/releases/download/v{{ template "get-github-latest-version" list "ynqa/jnv" }}/jnv-{{ $archLinuxGnu }}-unknown-linux-gnu.tar.xz"
@@ -193,4 +192,30 @@
     url = "https://github.com/cli/cli/releases/download/v{{ template "get-github-latest-version" list "cli/cli" }}/gh_{{ template "get-github-latest-version" list "cli/cli" }}_{{ if eq .chezmoi.os "darwin" }}macOS_{{ else }}linux_{{ end }}{{ $archNative }}{{ if eq .chezmoi.os "darwin" }}.zip{{ else }}.tar.gz{{ end }}"
     path = "gh_{{ template "get-github-latest-version" list "cli/cli" }}_{{ if eq .chezmoi.os "darwin" }}macOS_{{ else }}linux_{{ end }}{{ $archNative }}/bin/gh"
     executable = true
+    refreshPeriod = "168h"
+
+[".local/bin/neowofetch"]
+    type          = "file"
+    url           = "https://nf.hydev.org"
+    executable    = true
+    refreshPeriod = "168h"
+    
+[".local/bin/onefetch"]
+    type = "archive-file"
+    url = "https://github.com/o2sh/onefetch/releases/download/{{ template "get-github-latest-version" list "o2sh/onefetch" }}/onefetch-{{ if eq .chezmoi.os "darwin" }}mac{{ else }}linux{{ end }}.tar.gz"
+    path = "onefetch"
+    executable    = true
+    stripComponents = 1
+    refreshPeriod = "168h"
+
+[".local/share/fonts/FiraCodeNerdFont-Regular.ttf"]
+    type = "archive-file"
+    url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
+    path = "FiraCodeNerdFont-Regular.ttf"
+    refreshPeriod = "168h"
+
+[".local/share/fonts/FiraCodeNerdFontMono-Regular.ttf"]
+    type = "archive-file"
+    url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
+    path = "FiraCodeNerdFontMono-Regular.ttf"
     refreshPeriod = "168h"
