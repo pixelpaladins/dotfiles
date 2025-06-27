@@ -168,6 +168,9 @@ tput cud $(( ${#LUGIA_ART[@]} - TBOX_START - ${#TRAINER_INFO_BOX[@]} ))
 ###############################################################################
 DBOX_W=56
 # choose random flavour (defined earlier)
+if [ -z "$FLAVOR_LINE" ]; then
+  FLAVOR_LINE="A storm brews outside Mt. Silver..."
+fi
 WRAPPED_FLAVOR_LINE=$(echo "$FLAVOR_LINE" | fmt -w $((DBOX_W-4)))
 
 # draw box
