@@ -60,10 +60,12 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
 
     # Multiple keys, prompt user
     echo "Multiple SSH public keys found. Select one to register with Github:"
+    COLUMNS=1
     PS3=$'\nEnter the number of the key to register: '
     select key_to_add in "${local_pub_keys[@]}"; do
       [[ -n "$key_to_add" ]] && break
     done
+    unset COLUMNS
     if [[ -n "$key_to_add" ]]; then
       gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")"
       echo "✅ Public Key '$(basename "$key_to_add")' has been successfully registered with Github."
