@@ -25,7 +25,7 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
     done
 
     if (( ${#not_registered_keys[@]} )); then
-      echo "Some SSH public keys are not registered with GitHub."
+      echo "SSH public keys are not registered with GitHub."
       if (( ${#not_registered_keys[@]} == 1 )); then
         key_to_add="${not_registered_keys[1]}"
       else
