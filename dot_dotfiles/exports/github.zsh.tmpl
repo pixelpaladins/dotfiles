@@ -16,20 +16,19 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
     registered_key=""
     for keyfile in "$HOME"/.ssh/*; do
       [[ -f "$keyfile" ]] || continue
-      if grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) ' "$keyfile"; then
+      if head -n1 "$keyfile" | grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) '; then
         local_pub_keys+=("$keyfile")
-        local_key_content=$(awk '{print $2}' "$keyfile")
-        if grep -Fxq "$local_key_content" <<< "$github_keys"; then
-          registered_key="$keyfile"
-          break
-        fi
       fi
     done
 
-    if [[ -n "$registered_key" ]]; then
-      echo "✅ Public Key '$(basename "$registered_key")' is already registered with Github."
-      return
-    fi
+    # Check if any local public key is already registered
+    for pubkey in "${local_pub_keys[@]}"; do
+      local_key_content=$(awk '{print $2}' "$pubkey")
+      if grep -Fxq "$local_key_content" <<< "$github_keys"; then
+        echo "✅ Public Key '$(basename "$pubkey")' is already registered with Github."
+        return
+      fi
+    done
 
     if (( ${#local_pub_keys[@]} == 0 )); then
       echo "❌ No SSH public keys found in ~/.ssh."
