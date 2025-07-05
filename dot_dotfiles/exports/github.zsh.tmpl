@@ -1,44 +1,66 @@
+# ~/.dotfiles/exports/github.zsh.tmpl
 if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
+  # "Dark path" check
+  if [[ -f "$HOME/.ssh/dark_path" ]]; then
+    return
+  fi
+
   if ! gh auth status >/dev/null 2>&1; then
     echo "$GH_TOKEN" | gh auth login --with-token
     gh config set git_protocol ssh
   fi
 
   if gh auth status >/dev/null 2>&1; then
-    # Get all registered key contents from GitHub
     github_keys=$(gh ssh-key list | awk 'NR>1 {print $2}')
-    not_registered_keys=()
-    any_registered=false
+    local_pub_keys=()
+    registered_key=""
     for keyfile in "$HOME"/.ssh/*; do
       [[ -f "$keyfile" ]] || continue
-      # Only process public keys by content
       if grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) ' "$keyfile"; then
+        local_pub_keys+=("$keyfile")
         local_key_content=$(awk '{print $2}' "$keyfile")
         if grep -Fxq "$local_key_content" <<< "$github_keys"; then
-          echo "✅ SSH key $(basename "$keyfile") is registered with GitHub."
-          any_registered=true
-        else
-          not_registered_keys+=("$keyfile")
+          registered_key="$keyfile"
+          break
         fi
       fi
     done
 
-    if (( ${#not_registered_keys[@]} )); then
-      echo "Some SSH public keys are not registered with GitHub."
-      if (( ${#not_registered_keys[@]} == 1 )); then
-        key_to_add="${not_registered_keys[1]}"
+    if [[ -n "$registered_key" ]]; then
+      echo "✅ Public Key '$(basename "$registered_key")' is already registered with Github."
+      return
+    fi
+
+    if (( ${#local_pub_keys[@]} == 0 )); then
+      echo "❌ No SSH public keys found in ~/.ssh."
+      read "genkey?Would you like to generate a new SSH keypair and register it with Github? (y/n): "
+      if [[ "$genkey" =~ ^[Yy]$ ]]; then
+        keyfile="$HOME/.ssh/id_ed25519"
+        ssh-keygen -t ed25519 -N "" -f "$keyfile" -C "$USER@$(hostname)"
+        gh ssh-key add "${keyfile}.pub" --title "$(hostname)-id_ed25519"
+        echo "✅ Public Key 'id_ed25519.pub' has been successfully registered with Github."
       else
-        echo "Select a key to register with GitHub:"
-        select key_to_add in "${not_registered_keys[@]}"; do
-          [[ -n "$key_to_add" ]] && break
-        done
+        echo "❌ You have chosen a dark path young padawan... May the force be with you."
+        touch "$HOME/.ssh/dark_path"
       fi
-      if [[ -n "$key_to_add" ]]; then
-        gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")"
-        echo "✅ Registered $(basename "$key_to_add") with GitHub."
-      fi
-    elif [[ $any_registered != true ]]; then
-      echo "❌ No SSH public keys are registered with GitHub."
+      return
+    fi
+
+    if (( ${#local_pub_keys[@]} == 1 )); then
+      key_to_add="${local_pub_keys[1]}"
+      gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")"
+      echo "✅ Public Key '$(basename "$key_to_add")' has been successfully registered with Github."
+      return
+    fi
+
+    # Multiple keys, prompt user
+    echo "Multiple SSH public keys found. Select one to register with Github:"
+    select key_to_add in "${local_pub_keys[@]}"; do
+      [[ -n "$key_to_add" ]] && break
+    done
+    if [[ -n "$key_to_add" ]]; then
+      gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")"
+      echo "✅ Public Key '$(basename "$key_to_add")' has been successfully registered with Github."
     fi
   fi
 fi
