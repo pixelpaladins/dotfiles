@@ -8,6 +8,7 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
   if gh auth status >/dev/null 2>&1; then
     github_key_comments=$(gh ssh-key list | awk 'NR>1 {print $3}')
     not_registered_keys=()
+    any_registered=false
     for keyfile in "$HOME"/.ssh/*; do
       [[ -f "$keyfile" ]] || continue
       # Only process public keys by content
@@ -15,7 +16,7 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
         key_comment=$(awk '{print $3}' "$keyfile")
         if grep -Fxq "$key_comment" <<< "$github_key_comments"; then
           echo "✅ SSH key $(basename "$keyfile") is registered with GitHub."
-          break
+          any_registered=true
         else
           not_registered_keys+=("$keyfile")
         fi
@@ -36,6 +37,8 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
         gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")"
         echo "✅ Registered $(basename "$key_to_add") with GitHub."
       fi
+    elif [[ $any_registered != true ]]; then
+      echo "❌ No SSH public keys are registered with GitHub."
     fi
   fi
 fi
