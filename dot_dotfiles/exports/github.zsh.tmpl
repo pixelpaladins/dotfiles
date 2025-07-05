@@ -15,6 +15,22 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
     github_keys=$(gh api user/keys --jq '.[].key')
     local_pub_keys=()
     registered_key=""
+
+    if (( ${#local_pub_keys[@]} == 0 )); then
+      echo "❌ No SSH public keys found in ~/.ssh."
+      read "genkey?Would you like to generate a new SSH keypair and register it with Github? (y/n): "
+      if [[ "$genkey" =~ ^[Yy]$ ]]; then
+        keyfile="$HOME/.ssh/id_ed25519"
+        ssh-keygen -t ed25519 -N "" -f "$keyfile" -C "$USER@$(hostname)"
+        gh ssh-key add "${keyfile}.pub" --title "$(hostname)-id_ed25519"
+        echo "✅ Public Key '${keyfile}.pub' has been successfully registered with Github."
+      else
+        echo "❌ You have chosen a dark path young padawan... May the force be with you."
+        touch "$HOME/.ssh/dark_path"
+      fi
+      return
+    fi
+
     for keyfile in "$HOME"/.ssh/*; do
       [[ -f "$keyfile" ]] || continue
       if head -n1 "$keyfile" | grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) '; then
@@ -35,21 +51,6 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
         return
       fi
     done
-
-    if (( ${#local_pub_keys[@]} == 0 )); then
-      echo "❌ No SSH public keys found in ~/.ssh."
-      read "genkey?Would you like to generate a new SSH keypair and register it with Github? (y/n): "
-      if [[ "$genkey" =~ ^[Yy]$ ]]; then
-        keyfile="$HOME/.ssh/id_ed25519"
-        ssh-keygen -t ed25519 -N "" -f "$keyfile" -C "$USER@$(hostname)"
-        gh ssh-key add "${keyfile}.pub" --title "$(hostname)-id_ed25519"
-        echo "✅ Public Key '${keyfile}.pub' has been successfully registered with Github."
-      else
-        echo "❌ You have chosen a dark path young padawan... May the force be with you."
-        touch "$HOME/.ssh/dark_path"
-      fi
-      return
-    fi
 
     if (( ${#local_pub_keys[@]} == 1 )); then
       key_to_add="${local_pub_keys[1]}"
