@@ -21,10 +21,6 @@ done
 for file in $HOME/.dotfiles/exports/*.zsh; do
     [ -r "$file" ] && source "$file"
 done
-# Source GitHub CLI login (ensures gh is logged in every session)
-if [ -r "$HOME/.dotfiles/exports/github.zsh.tmpl" ]; then
-    source "$HOME/.dotfiles/exports/github.zsh.tmpl"
-fi
 
 # ------------------------------------------------------------
 # Source all other function files, except opAll.zsh
