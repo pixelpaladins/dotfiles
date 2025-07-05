@@ -16,7 +16,7 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
     local_pub_keys=()
     registered_key=""
 
-    if [[ ! -d "$HOME/.ssh" ]] || [[ -z "$(ls -A "$HOME/.ssh")" ]]; then
+    if (( ${#local_pub_keys[@]} == 0 )); then
       echo "❌ No SSH public keys found in ~/.ssh."
       read "genkey?Would you like to generate a new SSH keypair and register it with Github? (y/n): "
       if [[ "$genkey" =~ ^[Yy]$ ]]; then
@@ -30,14 +30,14 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
         touch "$HOME/.ssh/dark_path"
         return
       fi
-    else
-      for keyfile in "$HOME"/.ssh/*; do
-        [[ -f "$keyfile" ]] || continue
-        if head -n1 "$keyfile" | grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) '; then
-          local_pub_keys+=("$keyfile")
-        fi
-      done
     fi
+
+    for keyfile in "$HOME"/.ssh/*; do
+      [[ -f "$keyfile" ]] || continue
+      if head -n1 "$keyfile" | grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) '; then
+        local_pub_keys+=("$keyfile")
+      fi
+    done
 
     # Check if any local public key is already registered
     for pubkey in "${local_pub_keys[@]}"; do
