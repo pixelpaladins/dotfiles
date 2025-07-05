@@ -24,11 +24,12 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
         ssh-keygen -t ed25519 -N "" -f "$keyfile" -C "$USER@$(hostname)"
         gh ssh-key add "${keyfile}.pub" --title "$(hostname)-id_ed25519"
         echo "✅ Public Key '${keyfile}.pub' has been successfully registered with Github."
+        return
       else
         echo "❌ You have chosen a dark path young padawan... May the force be with you."
         touch "$HOME/.ssh/dark_path"
+        return
       fi
-      return
     fi
 
     for keyfile in "$HOME"/.ssh/*; do
