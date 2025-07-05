@@ -23,7 +23,13 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
 
     # Check if any local public key is already registered
     for pubkey in "${local_pub_keys[@]}"; do
+      echo "*****************"
+      echo "Checking local key: $pubkey"
       local_key_content=$(awk '/^ssh-(rsa|ed25519|ecdsa|dss) / {print $2; exit}' "$pubkey")
+      echo "Checking local key content: $local_key_content"
+      echo "Checking Registered Github Key: $github_keys"
+      echo "*****************"
+      
       if [[ -n "$local_key_content" ]] && grep -Fxq "$local_key_content" <<< "$github_keys"; then
         echo "✅ Public Key '$(basename "$pubkey")' is already registered with Github."
         return
