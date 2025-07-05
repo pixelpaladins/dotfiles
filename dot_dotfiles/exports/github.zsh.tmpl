@@ -23,8 +23,8 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
 
     # Check if any local public key is already registered
     for pubkey in "${local_pub_keys[@]}"; do
-      local_key_content=$(awk '{print $2}' "$pubkey")
-      if grep -Fxq "$local_key_content" <<< "$github_keys"; then
+      local_key_content=$(awk '/^ssh-(rsa|ed25519|ecdsa|dss) / {print $2; exit}' "$pubkey")
+      if [[ -n "$local_key_content" ]] && grep -Fxq "$local_key_content" <<< "$github_keys"; then
         echo "✅ Public Key '$(basename "$pubkey")' is already registered with Github."
         return
       fi
@@ -37,7 +37,7 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
         keyfile="$HOME/.ssh/id_ed25519"
         ssh-keygen -t ed25519 -N "" -f "$keyfile" -C "$USER@$(hostname)"
         gh ssh-key add "${keyfile}.pub" --title "$(hostname)-id_ed25519"
-        echo "✅ Public Key 'id_ed25519.pub' has been successfully registered with Github."
+        echo "✅ Public Key '${keyfile}.pub' has been successfully registered with Github."
       else
         echo "❌ You have chosen a dark path young padawan... May the force be with you."
         touch "$HOME/.ssh/dark_path"
