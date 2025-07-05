@@ -51,10 +51,15 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
 
     if (( ${#local_pub_keys[@]} == 1 )); then
       key_to_add="${local_pub_keys[1]}"
-      if gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")" | grep -q "already exists"; then
+      local_key_content=$(awk '{print $2}' "$key_to_add")
+      if grep -Fxq "$local_key_content" <<< "$github_keys"; then
         echo "✅ Public Key '$(basename "$key_to_add")' is already registered with Github."
       else
-        echo "✅ Public Key '$(basename "$key_to_add")' has been successfully registered with Github."
+        if gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")" | grep -q "already exists"; then
+          echo "✅ Public Key '$(basename "$key_to_add")' is already registered with Github."
+        else
+          echo "✅ Public Key '$(basename "$key_to_add")' has been successfully registered with Github."
+        fi
       fi
       return
     fi
@@ -65,10 +70,15 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
       [[ -n "$key_to_add" ]] && break
     done
     if [[ -n "$key_to_add" ]]; then
-      if gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")" | grep -q "already exists"; then
+      local_key_content=$(awk '{print $2}' "$key_to_add")
+      if grep -Fxq "$local_key_content" <<< "$github_keys"; then
         echo "✅ Public Key '$(basename "$key_to_add")' is already registered with Github."
       else
-        echo "✅ Public Key '$(basename "$key_to_add")' has been successfully registered with Github."
+        if gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")" | grep -q "already exists"; then
+          echo "✅ Public Key '$(basename "$key_to_add")' is already registered with Github."
+        else
+          echo "✅ Public Key '$(basename "$key_to_add")' has been successfully registered with Github."
+        fi
       fi
     fi
   fi
