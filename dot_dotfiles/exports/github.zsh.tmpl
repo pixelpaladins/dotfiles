@@ -1,0 +1,43 @@
+# ~/.dotfiles/exports/github.zsh.tmpl
+# Ensure GitHub CLI is logged in non-interactively and set to use SSH protocol
+if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
+  if ! gh auth status >/dev/null 2>&1; then
+    echo "$GH_TOKEN" | gh auth login --with-token
+    gh config set git_protocol ssh
+  fi
+
+  # Check if any local SSH public key is registered with GitHub
+  if gh auth status >/dev/null 2>&1; then
+    github_keys=$(gh ssh-key list --json key -q '.[] | .key')
+    not_registered_keys=()
+    for keyfile in "$HOME"/.ssh/*; do
+      [[ -f "$keyfile" ]] || continue
+      # Only process public keys (by content)
+      if grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) ' "$keyfile"; then
+        local_key=$(<"$keyfile")
+        if grep -Fxq "$local_key" <<< "$github_keys"; then
+          echo "✅ SSH key $(basename "$keyfile") is registered with GitHub."
+          break
+        else
+          not_registered_keys+=("$keyfile")
+        fi
+      fi
+    done
+
+    if (( ${#not_registered_keys[@]} )); then
+      echo "Some SSH public keys are not registered with GitHub."
+      if (( ${#not_registered_keys[@]} == 1 )); then
+        key_to_add="${not_registered_keys[1]}"
+      else
+        echo "Select a key to register with GitHub:"
+        select key_to_add in "${not_registered_keys[@]}"; do
+          [[ -n "$key_to_add" ]] && break
+        done
+      fi
+      if [[ -n "$key_to_add" ]]; then
+        gh ssh-key add "$key_to_add" --title "$(hostname)-$(basename "$key_to_add")"
+        echo "✅ Registered $(basename "$key_to_add") with GitHub."
+      fi
+    fi
+  fi
+fi
