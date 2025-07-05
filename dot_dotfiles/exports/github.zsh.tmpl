@@ -11,8 +11,8 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
   fi
 
   if gh auth status >/dev/null 2>&1; then
-    # Parse plain output of gh ssh-key list to get the registered key type and data
-    github_keys=$(gh ssh-key list | awk 'NR>1 {print $3, $4}')
+    # Use gh api user/keys to get the registered key strings (type and key data)
+    github_keys=$(gh api user/keys --jq '.[].key')
     local_pub_keys=()
     registered_key=""
     for keyfile in "$HOME"/.ssh/*; do
@@ -26,7 +26,7 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
     for pubkey in "${local_pub_keys[@]}"; do
       echo "*****************"
       echo "Checking local key: $pubkey"
-      local_key_content=$(awk '/^ssh-(rsa|ed25519|ecdsa|dss) / {print $1, $2; exit}' "$pubkey")
+      local_key_content=$(awk '/^ssh-(rsa|ed25519|ecdsa|dss) / {print $1 " " $2; exit}' "$pubkey")
       echo "Checking local key content: $local_key_content"
       echo "Checking Registered Github Key: $github_keys"
       echo "*****************"
