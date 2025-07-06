@@ -2,7 +2,7 @@
 # ----------------------------------------------------------
 # Combined 1Password session manager, login, helper, and creds functions
 
-# Ensure ~/.config/op permissions are 700
+# Ensure ~/.config/op permissions are correct
 if [ -d "$HOME/.config/op" ]; then
   perms=$(stat -c "%a" "$HOME/.config/op")
   other_perms=$(stat -c "%a" "$HOME/.config/op/config")
