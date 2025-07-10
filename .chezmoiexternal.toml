@@ -145,9 +145,9 @@
     stripComponents = 1
     refreshPeriod = "168h"
 
-[".tmux/plugins/tmux-continuum/continuum.tmux"]
-    type = "file"
-    url = "https://raw.githubusercontent.com/tmux-plugins/tmux-continuum/master/continuum.tmux"
+[".tmux/plugins/tmux-continuum"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-continuum"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
