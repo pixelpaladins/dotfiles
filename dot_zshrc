@@ -1,6 +1,21 @@
 # Source necessary bins
 export PATH="$PATH:$HOME/.local/bin"
 
+# --- Auto tmux session management ---
+if command -v tmux >/dev/null 2>&1; then
+  # Only run if not already inside tmux
+  if [[ -z "$TMUX" ]]; then
+    if ! tmux has-session -t main 2>/dev/null; then
+      tmux new-session -s main
+    else
+      # If there are any sessions, attach to the last active
+      tmux attach || tmux new-session -s main
+    fi
+    # Prevent running the rest of .zshrc after tmux attach
+    exit
+  fi
+fi
+
 # Load the splash screen
 source "$HOME/.dotfiles/init/00_splash.zsh"
 
@@ -190,3 +205,4 @@ fi
 for file in $HOME/.dotfiles/autocompletion/*.zsh; do
     [ -r "$file" ] && source "$file"
 done
+
