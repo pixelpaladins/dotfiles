@@ -146,8 +146,8 @@
     refreshPeriod = "168h"
 
 [".tmux/plugins/tmux-continuum"]
-    type = "git-repo"
-    url = "https://github.com/tmux-plugins/tmux-continuum"
+    type = "archive"
+    url = "https://github.com/tmux-plugins/tmux-continuum/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
