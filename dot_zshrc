@@ -8,11 +8,10 @@ if command -v tmux >/dev/null 2>&1; then
     if ! tmux has-session -t main 2>/dev/null; then
       tmux new-session -s main
     else
-      # If there are any sessions, attach to the last active
+      # If there are any sessions, attach to the last active and prevent running the rest of .zshrc
       tmux attach || tmux new-session -s main
+      exit
     fi
-    # Prevent running the rest of .zshrc after tmux attach
-    exit
   fi
 fi
 
