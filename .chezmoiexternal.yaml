@@ -18,10 +18,10 @@
 {{ if eq $archNeovim "amd64" }}{{ $archNeovim = "x86_64" }}{{ end }}
 
 [".local/opt/nvim"]
-    type            = "archive"
-    url             = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-{{ $osName }}-{{ $archNeovim }}.tar.gz"
+    type = "archive"
+    url = "https://github.com/neovim/neovim/releases/download/v{{ template "get-github-latest-version" list "neovim/neovim" }}/nvim-{{ $osName }}-{{ $archNeovim }}.tar.gz"
     stripComponents = 1
-    refreshPeriod   = "168h"
+    refreshPeriod = "168h"
 
 [".local/bin/jnv"]
     type = "archive-file"
@@ -184,7 +184,7 @@
     type = "archive-file"
     url  = "https://nodejs.org/dist/{{ template "get-node-latest-lts-version" . }}/node-{{ template "get-node-latest-lts-version" . }}-{{ $osNative }}-{{ $archX64 }}.tar.xz"
     path = "node-{{ template "get-node-latest-lts-version" . }}-{{ $osNative }}-{{ $archX64 }}/bin/node"
-    executable    = true
+    executable = true
     refreshPeriod = "168h"
 
 [".local/bin/op"]
@@ -202,16 +202,16 @@
     refreshPeriod = "168h"
 
 [".local/bin/neowofetch"]
-    type          = "file"
-    url           = "https://nf.hydev.org"
-    executable    = true
+    type = "file"
+    url = "https://nf.hydev.org"
+    executable = true
     refreshPeriod = "168h"
     
 [".local/bin/onefetch"]
     type = "archive-file"
     url = "https://github.com/o2sh/onefetch/releases/download/{{ template "get-github-latest-version" list "o2sh/onefetch" }}/onefetch-{{ if eq .chezmoi.os "darwin" }}mac{{ else }}linux{{ end }}.tar.gz"
     path = "onefetch"
-    executable    = true
+    executable = true
     stripComponents = 1
     refreshPeriod = "168h"
 
