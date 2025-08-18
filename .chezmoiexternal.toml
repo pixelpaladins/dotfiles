@@ -161,7 +161,7 @@
 
 [".config/nvim/lua/custom/plugins/lualine.lua"]
     type = "file"
-    url = "https://raw.githubusercontent.com/xero/dotfiles/refs/heads/main/neovim/.config/nvim/lua/plugins/lualine.lua"
+    url = "https://raw.githubusercontent.com/xero/dotfiles/refs/heads/main/neovim/.config/nvim/lua/ui/lualine.lua"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
