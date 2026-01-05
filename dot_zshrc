@@ -24,14 +24,14 @@ if [ -f "$HOME/.dotfiles/functions/opAll.zsh" ]; then
 fi
 
 # ------------------------------------------------------------
-# Source all alias files
-for file in $HOME/.dotfiles/aliases/*.zsh; do
+# Source all alias files (use N glob qualifier to avoid error on no matches)
+for file in $HOME/.dotfiles/aliases/*.zsh(N); do
     [ -r "$file" ] && source "$file"
 done
 
 # ------------------------------------------------------------
-# Source all export files
-for file in $HOME/.dotfiles/exports/*.zsh; do
+# Source all export files (use N glob qualifier to avoid error on no matches)
+for file in $HOME/.dotfiles/exports/*.zsh(N); do
     [ -r "$file" ] && source "$file"
 done
 # Source GitHub CLI login (ensures gh is logged in every session)
@@ -40,8 +40,8 @@ if [ -r "$HOME/.dotfiles/exports/github.zsh.tmpl" ]; then
 fi
 
 # ------------------------------------------------------------
-# Source all other function files, except opAll.zsh
-for file in $HOME/.dotfiles/functions/*.zsh; do
+# Source all other function files, except opAll.zsh (use N glob qualifier)
+for file in $HOME/.dotfiles/functions/*.zsh(N); do
     [[ "$file" != *"opAll.zsh" ]] && [ -r "$file" ] && source "$file"
 done
 
@@ -199,8 +199,8 @@ if command -v gh >/dev/null 2>&1 && gh copilot --help >/dev/null 2>&1; then
     eval "$(gh copilot alias -- zsh)" >/dev/null 2>&1
 fi
 # ------------------------------------------------------------
-# Source all completion files
-for file in $HOME/.dotfiles/autocompletion/*.zsh; do
+# Source all completion files (use N glob qualifier to avoid error on no matches)
+for file in $HOME/.dotfiles/autocompletion/*.zsh(N); do
     [ -r "$file" ] && source "$file"
 done
 
