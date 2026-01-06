@@ -33,6 +33,12 @@ if command -v gh >/dev/null 2>&1 && [[ -n "$GH_TOKEN" ]]; then
     else
       for keyfile in "$HOME"/.ssh/*; do
         [[ -f "$keyfile" ]] || continue
+        # Skip authorized_keys files (they contain public keys but are for incoming SSH auth)
+        [[ "$(basename "$keyfile")" == authorized_keys* ]] && continue
+        # Skip known_hosts and config files
+        [[ "$(basename "$keyfile")" == known_hosts* ]] && continue
+        [[ "$(basename "$keyfile")" == config ]] && continue
+        # Only consider .pub files or files that look like public keys
         if head -n1 "$keyfile" | grep -qE '^ssh-(rsa|ed25519|ecdsa|dss) '; then
           local_pub_keys+=("$keyfile")
         fi
